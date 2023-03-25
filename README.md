@@ -3,7 +3,8 @@
 This is my personal website where I showcase my portfolio and share my thoughts on various topics.
 Getting Started
 
-To view the website, simply visit www.mywebsite.com.
+To view the website, simply visit <https://parken.cstrube.de>
+
 Built With
 
     HTML
