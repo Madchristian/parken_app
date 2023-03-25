@@ -1,16 +1,24 @@
 // parken.js
-import { getLocation } from './positionandsave.js';
-import { showSpinner, hideSpinner } from './progress.js';
-import { scanQRCodeHandler} from './scanqrcodehandler.js';
-import { processImage, scanLicensePlate } from './licensePlateScanner.js';
 
+// Importieren der benötigten Funktionen und Variablen aus anderen Modulen
+import { getLocation } from './positionandsave.js';
+import { showProgressBar, hideProgressBar, updateProgressBar } from './progress.js';
+import { scanQRCodeHandler} from './scanqrcodehandler.js';
+import { scanLicensePlate } from './licensePlateScanner.js';
+
+// Exportieren der benötigten Funktionen und Variablen für andere Module
 export {
   getLocation,
-  showSpinner,
-  hideSpinner,
+  showProgressBar,
+  hideProgressBar,
+  updateProgressBar,
   scanQRCodeHandler
 };
+
+
+// Funktion zur Initialisierung der Event-Listener
 function init() {
+    // Event-Listener für den "Position"-Button hinzufügen
     document.getElementById('positionButton').addEventListener('click', async () => {
       try {
         await getLocation('');
@@ -18,21 +26,28 @@ function init() {
         console.error(error);
       }
     });
-  
-    document.getElementById('scanLicensePlateButton').addEventListener('click', () => {
-        licensePlateFileInput.addEventListener('change', async () => {
-          try {
-            await scanLicensePlate(licensePlateFileInput);
-          } catch (error) {
-            console.error(error);
-          }
-        });
-        licensePlateFileInput.click();
+
+    // Event-Listener für den "Kennzeichen scannen"-Button hinzufügen
+    document.getElementById('scanLicensePlateButton').addEventListener('click', async () => {
+      // Input-Element für die Kennzeichen-Datei auswählen
+      const licensePlateFileInput = document.getElementById('licensePlateInput');
+      // Event-Listener für das Ändern des Input-Elements hinzufügen
+      licensePlateFileInput.addEventListener('change', async () => {
+        try {
+          await scanLicensePlate(licensePlateFileInput);
+        } catch (error) {
+          console.error(error);
+        }
       });
-      
+      // Klicken des Input-Elements simulieren
+      licensePlateFileInput.click();
+    });
   
+    // Event-Listener für den "QR Code scannen"-Button hinzufügen
     document.getElementById('scanQRCodeButton').addEventListener('click', async () => {
+      // Überprüfen, ob das Gerät mobil ist
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      // Wenn das Gerät mobil ist, den QR-Code-Scanner öffnen
       if (isMobile) {
         try {
           await scanQRCodeHandler();
@@ -40,12 +55,11 @@ function init() {
           console.error(error);
         }
       } else {
+        // Andernfalls eine Fehlermeldung ausgeben
         alert('This feature is only available on mobile devices.');
       }
-      
-    })
-      
-  }
-  
-  window.onload = init;
-  
+    });
+}
+
+// Event-Listener für das Laden der Seite hinzufügen
+window.onload = init;

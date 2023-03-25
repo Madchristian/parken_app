@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Parken</title>
     <link rel="stylesheet" type="text/css" href="/src/css/progressbar.css">
-
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.0.2/worker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.0.2/tesseract.min.js"></script>
     <script type="module" src="/src/js/positionandsave.js"></script>
     <script type="module" src="/src/js/licensePlateScanner.js"></script>
     <script type="module" src="/src/js/extractLicensePlate.js"></script>
@@ -17,13 +17,12 @@
     <script type="module" src="/src/js/scanqrcodehandler.js"></script>
     <script type="module" src="/src/js/scanqrcodeios.js"></script>
     <script type="module" src="/src/js/parken.js"></script>
-    
   </head>
   <body class="bg-dark">
     
-        <nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: #858585;">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: #333438;">
             <div class="container-fluid">
-              <a class="navbar-brand" href="#">cstrube.de</a>
+              <a class="navbar-brand brand-link" href="#">cstrube.de</a>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
@@ -65,11 +64,12 @@
               <button id="scanQRCodeButton" type="button" class="btn btn-outline-success btn-lg flex-grow-1">QR Code scannen</button>
             </div>
           </div>
-          <div class="progress-container fixed-bottom">
+          <div class="progress-container fixed-bottom" id="progress-container">
             <div class="progress">
               <div class="progress-bar" role="progressbar"></div>
             </div>
           </div>
+          
           
           </div>
           

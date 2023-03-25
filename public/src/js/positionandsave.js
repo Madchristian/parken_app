@@ -1,5 +1,4 @@
-//positionandsave.js
-import { showProgressBar, hideProgressBar } from "./progress";
+import { showProgressBar, hideProgressBar, updateProgressBar } from "./progress.js";
 
 async function saveData(licensePlate, latitude, longitude) {
   const apiUrl = "https://parken.cstrube.de/apiv3/save-data";
@@ -23,22 +22,29 @@ async function saveData(licensePlate, latitude, longitude) {
       const jsonResponse = await response.json();
       console.log("Data saved successfully:", jsonResponse);
 
-      hideProgressBar(); // Ausblenden des Ladebalkens
+      // Aktualisieren des Fortschrittsbalkens auf 100% und Ausblenden des Ladebalkens
+      updateProgressBar(100);
+      hideProgressBar();
+      
       const swoosh = new Audio("/sound/swoosh.mp3");
       swoosh.play();
     } else {
       console.error("Error saving data:", response.status, response.statusText);
       const errorsound = new Audio("/sound/error.mp3");
       errorsound.play();
-      hideProgressBar(); // Ausblenden des Ladebalkens
+
+      // Aktualisieren des Fortschrittsbalkens auf 0% und Ausblenden des Ladebalkens
+      updateProgressBar(0);
+      hideProgressBar();
     }
   } catch (error) {
     console.error("Error sending data to server:", error);
-    hideProgressBar(); // Ausblenden des Ladebalkens
+
+    // Aktualisieren des Fortschrittsbalkens auf 0% und Ausblenden des Ladebalkens
+    updateProgressBar(0);
+    hideProgressBar();
   }
 }
-
-
 export function getLocation(licensePlate) {
   if (navigator.geolocation) {
     showProgressBar(); // Anzeigen des Ladebalkens
@@ -56,4 +62,3 @@ export function getLocation(licensePlate) {
     alert("Geolocation is not supported by this browser.");
   }
 }
-

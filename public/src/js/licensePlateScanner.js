@@ -1,13 +1,17 @@
-// licensePlateScanner.js
-//import { Tesseract } from '../../node_modules/tesseract.js/dist/tesseract.min.js';
 import { getLocation } from "./positionandsave.js";
-import { showProgressBar, hideProgressBar } from "./progress.js";
+import { showProgressBar, hideProgressBar, updateProgressBar } from "./progress.js";
+// licensePlateScanner.js
+export const licensePlateFileInput = document.getElementById('licensePlateInput');
 
+
+// ...
 export async function scanLicensePlate(imageFile) {
   showProgressBar();
+  updateProgressBar(20); // Aktualisierung des Fortschrittsbalkens auf 20%
 
   // Erstellen Sie einen Worker
-  const worker = Tesseract.createWorker({
+  const worker = await Tesseract.createWorker({
+
     logger: (m) => console.log(m),
   });
 
@@ -26,6 +30,7 @@ export async function scanLicensePlate(imageFile) {
 
     console.log(text);
     await worker.terminate();
+    updateProgressBar(60); // Aktualisierung des Fortschrittsbalkens auf 60%
     hideProgressBar();
 
     const licensePlate = text;
@@ -35,23 +40,3 @@ export async function scanLicensePlate(imageFile) {
     hideProgressBar();
   }
 }
-
-
-
-
-
-export function processImage(input) {
-    const file = input.files[0];
-    const reader = new FileReader();
-    reader.onload = function(event) {
-      const img = new Image();
-      img.onload = function() {
-        // do something with the image, e.g. display it
-        const imageElement = document.getElementById('licensePlateImage');
-        imageElement.src = this.src;
-      }
-      img.src = event.target.result;
-    }
-    reader.readAsDataURL(file);
-  }
-  

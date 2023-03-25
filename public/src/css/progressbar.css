@@ -26,7 +26,7 @@
   
   .progress {
     position: relative;
-    background-color: #ffffffa4;
+    background-color: #ffffffe2;
     bottom: 0px;
     max-width: 220px;
     width: 100%;
@@ -38,7 +38,20 @@
   .progress-bar {
     background-color: #940370;
     width: 1%;
-    height: 90%;
+    height: 100%;
     border-radius: 10px;
     transition: width 0.5s ease;
   }
+  .progress-bar {
+    animation: progress-bar-stripes 1s linear infinite;
+  }
+  
+  @keyframes progress-bar-stripes {
+    from {
+      background-position: 1rem 0;
+    }
+    to {
+      background-position: 0 0;
+    }
+  }
+  
