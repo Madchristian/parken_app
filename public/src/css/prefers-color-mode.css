@@ -1,0 +1,11 @@
+body {
+    background-color: rgb(255, 255, 255);
+    color: black;
+  }
+  
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: rgb(39, 39, 41);
+      color: white;
+    }
+  }

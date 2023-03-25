@@ -1,0 +1,116 @@
+<!--parkplatz.ejs-->
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+  <head>
+    <%- include('header') %>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Parkplatz</title>
+    <link rel="stylesheet" href="./src/css/parkplatz-grid.css">     
+  </head>
+  <body class="bg-dark">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: #565656d6;">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">cstrube.de</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="/">Statistik</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link active" href="parkplatz">Parkplatz</a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a class="nav-link" href="parken">Parken</a>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Links
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" href="#">Schlüsseltresor</a></li>
+                      <li><a class="dropdown-item" href="#">Another action</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                  </li>
+                </ul>
+                <form class="d-flex" role="search">
+                  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                  <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+              </div>
+            </div>
+          </nav>
+
+  <!-- Grid-Layout -->
+  <div class="container-fluid">
+    <div class="grid">
+        <div class="grid-item" data-index="0" style="background-image: url('example.jpg');">
+            <span>image 0</span>
+        </div>
+        <div class="grid-item" data-index="1" style="background-image: url('example.jpg');">
+            <span>image 1</span>
+        </div>
+        <div class="grid-item" data-index="2" style="background-image: url('example.jpg');">
+            <span>image 2</span>
+        </div>
+        <div class="grid-item" data-index="3" style="background-image: url('example.jpg');">
+            <span>image 3</span>
+        </div>
+        <div class="grid-item" data-index="4" style="background-image: url('example.jpg');">
+            <span>image 4</span>
+        </div>
+        <div class="grid-item" data-index="5" style="background-image: url('example.jpg');">
+            <span>image 5</span>
+        </div>
+        <div class="grid-item" data-index="0" style="background-image: url('example.jpg');">
+            <span>image 6</span>
+        </div>
+        <div class="grid-item" data-index="1" style="background-image: url('example.jpg');">
+            <span>image 7</span>
+        </div>
+        <div class="grid-item" data-index="2" style="background-image: url('example.jpg');">
+            <span>image 8</span>
+        </div>
+        <div class="grid-item" data-index="3" style="background-image: url('example.jpg');">
+            <span>image 9</span>
+        </div>
+        <div class="grid-item" data-index="4" style="background-image: url('example.jpg');">
+            <span>image 10</span>
+        </div>
+        <div class="grid-item" data-index="5" style="background-image: url('example.jpg');">
+            <span>image 11</span>
+        </div>
+        <div class="grid-item" data-index="0" style="background-image: url('example.jpg');">
+            <span>image 12</span>
+        </div>
+        <div class="grid-item" data-index="1" style="background-image: url('example.jpg');">
+            <span>image 13</span>
+        </div>
+        <div class="grid-item" data-index="2" style="background-image: url('example.jpg');">
+            <span>image 14</span>
+        </div>
+        <div class="grid-item" data-index="3" style="background-image: url('example.jpg');">
+            <span>image 15</span>
+        </div>
+        <div class="grid-item" data-index="4" style="background-image: url('example.jpg');">
+            <span>image 16</span>
+        </div>
+        <div class="grid-item" data-index="5" style="background-image: url('example.jpg');">
+            <span>image 17</span>
+        </div>
+
+    </div>
+      
+
+    <!-- Einbindung von Bootstrap JS -->
+    <script src="/src/js/parkplatz.js"></script>
+    <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+    </body>
+</html>

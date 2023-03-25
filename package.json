@@ -1,0 +1,22 @@
+{
+  "name": "parken_app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "parken_app"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^5.2.3",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "jquery": "^3.6.4",
+    "tesseract.js": "^4.0.2"
+  }
+}

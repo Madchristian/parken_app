@@ -1,0 +1,44 @@
+/* Default styles for progress container */
+.progress-container {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: -1;
+  }
+  
+  /* Styles for progress container when viewport is smaller than 768px */
+  @media (max-height: 767px) {
+    .progress-container {
+      bottom: 30px; /* Increase bottom position to make space for buttons */
+      width: 100%; /* Reduce width to make space for buttons */
+    }
+  }
+  
+  /* Styles for progress container when viewport is smaller than 576px */
+  @media (max-height: 575px) {
+    .progress-container {
+      bottom: 20px; /* Increase bottom position to make space for buttons */
+      width: 100%; /* Reduce width to make space for buttons */
+    }
+  }
+  
+  
+  .progress {
+    position: relative;
+    background-color: #ffffffa4;
+    bottom: 0px;
+    max-width: 220px;
+    width: 100%;
+    height: 20px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  
+  .progress-bar {
+    background-color: #940370;
+    width: 1%;
+    height: 90%;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+  }

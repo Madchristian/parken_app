@@ -1,0 +1,28 @@
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(6, 20vh);
+    gap: 0;
+    background-color: #f2f2f2; /* helle graue Hintergrundfarbe */
+    opacity: 0.2; /* Hier wird die Transparenz eingestellt */
+  }
+  
+  .grid-item {
+    background-color: #494949;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #cccccc; /* heller Rahmen */
+  }
+  
+  #image1 {
+    background-image: url('placeholder.jpg');
+  }
+  .selected {
+    background-color: rgb(228, 19, 43); /* Hervorhebungsfarbe für ausgewählte Zelle */
+    opacity: 1.0; /* Hier wird die Transparenz eingestellt */
+  }
+body {
+    background-image: url('pfad/zum/bild.jpg');
+    background-size: cover;
+  }
