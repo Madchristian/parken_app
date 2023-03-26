@@ -2,7 +2,7 @@
 
 // Importieren der benötigten Funktionen und Variablen aus anderen Modulen
 import { getLocation } from './positionandsave.js';
-import { showProgressBar, hideProgressBar, updateProgressBar } from './progress.js';
+import { showProgressBar, hideProgressBar, updateProgressBar, startProgress, stopProgress } from './progress.js';
 import { scanQRCodeHandler} from './scanqrcodehandler.js';
 import { scanLicensePlate } from './licensePlateScanner.js';
 
@@ -11,13 +11,18 @@ export {
   getLocation,
   showProgressBar,
   hideProgressBar,
+  startProgress,
+  stopProgress,
   updateProgressBar,
   scanQRCodeHandler
 };
 
+document.addEventListener('DOMContentLoaded', () => {
+  // Hide progress bar initially
+  stopProgress();
 
-// Funktion zur Initialisierung der Event-Listener
-function init() {
+  // Funktion zur Initialisierung der Event-Listener
+  function init() {
     // Event-Listener für den "Position"-Button hinzufügen
     document.getElementById('positionButton').addEventListener('click', async () => {
       try {
@@ -59,7 +64,8 @@ function init() {
         alert('This feature is only available on mobile devices.');
       }
     });
-}
+  }
 
-// Event-Listener für das Laden der Seite hinzufügen
-window.onload = init;
+  // Event-Listener für das Laden der Seite hinzufügen
+  window.onload = init;
+});

@@ -1,0 +1,6 @@
+.modal-content {
+    background-color: #323335; /* Hintergrundfarbe ändern */
+    color: #000; /* Textfarbe anpassen */
+    border: 0;
+    border-radius: 10px; /* Runde Ecken hinzufügen */
+  }

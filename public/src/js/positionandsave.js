@@ -52,8 +52,10 @@ export function getLocation(licensePlate) {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
       console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+      console.log(licensePlate)
       saveData(licensePlate, latitude, longitude).catch(error => {
         console.error(error);
+        console.log(data)
       }).finally(() => {
         hideProgressBar(); // Ausblenden des Ladebalkens unabhängig davon, ob das Speichern erfolgreich war oder nicht
       });

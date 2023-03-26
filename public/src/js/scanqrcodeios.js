@@ -1,57 +1,140 @@
 import { getLocation } from './positionandsave.js';
+import { extractLicensePlate } from './extractLicensePlate.js';
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Get the modal element
+  const myModal = document.getElementById('qrScannerModal');
+
+  // Add event listeners to handle the modal's show and hide events
+  myModal.addEventListener('shown.bs.modal', () => {
+    startScanning(myModal);
+  });
+
+  myModal.addEventListener('hidden.bs.modal', () => {
+    stopScanning(myModal);
+  });
+
+  // Add event listener to handle the timeout
+  myModal.addEventListener('scanner-timeout', () => {
+    stopProgress();
+    const modal = bootstrap.Modal.getInstance(myModal);
+    modal.hide();
+  });
+});
+
+let cameraPermission = undefined;
+let stream = null;
+let intervalId;
+let timeoutId;
+
+async function requestCameraPermission() {
+  try {
+    await window.navigator.mediaDevices.getUserMedia({ video: true });
+    cameraPermission = true;
+  } catch (error) {
+    console.error(error);
+    cameraPermission = false;
+  }
+}
+let myModal; // Move the myModal variable outside of the function
+
+function stopScanning(modal) {
+  if (stream) {
+    stream.getTracks().forEach((track) => track.stop());
+    stream = null;
+  }
+  if (intervalId) {
+    clearInterval(intervalId);
+    intervalId = null;
+  }
+  if (timeoutId) {
+    clearTimeout(timeoutId);
+    timeoutId = null;
+  }
+  if (video) {
+    modal.querySelector('.modal-body').removeChild(video); // Remove the video element from the modal body
+    video = null;
+  }
+}
+
+myModal.addEventListener('hidden.bs.modal', () => {
+  stopScanning(qrModalElement);
+});
+
 
 export async function scanQRCodeiOS() {
-  return new Promise(resolve => {
-    const captureDevice = getCaptureDevice();
-    const captureSession = new AVCaptureSession();
-    const captureOutput = new AVCaptureMetadataOutput();
-    let qrCodeData;
+  const video = document.createElement('video');
+  video.setAttribute('autoplay', '');
+  video.setAttribute('muted', '');
+  video.setAttribute('playsinline', '');
+  video.style.width = '100%';
+  video.style.height = '100%'; // Change this from 'auto' to '100%'
+  video.style.backgroundColor = 'rgba(0, 0, 0, 0)'; // Set the background color to transparent
 
-    const previewLayer = AVCaptureVideoPreviewLayer.layerWithSession(captureSession);
-    previewLayer.frame = document.bounds;
-    document.body.layer.addSublayer(previewLayer);
-
-    const captureInput = AVCaptureDeviceInput.deviceInputWithDeviceError(captureDevice);
-    if (captureInput) {
-      captureSession.addInput(captureInput);
-      captureSession.addOutput(captureOutput);
-      captureOutput.setMetadataObjectsDelegateQueue(this, null);
-
-      const availableMetadataObjectTypes = captureOutput.availableMetadataObjectTypes();
-      if (availableMetadataObjectTypes.containsObject(AVMetadataObjectTypeQRCode)) {
-        captureOutput.metadataObjectTypes = [AVMetadataObjectTypeQRCode];
-        captureOutput.setMetadataObjectsDelegateQueue(this, null);
-
-        captureSession.startRunning();
-      } else {
-        console.log('QR-Code-Erkennung wird auf diesem Gerät nicht unterstützt.');
-      }
-    } else {
-      console.log('Die Kamera konnte nicht geöffnet werden.');
+  const permissionStatus = await navigator.permissions.query({ name: 'camera' });
+  if (permissionStatus.state === 'granted') {
+    cameraPermission = true;
+  } else if (permissionStatus.state === 'prompt') {
+    await requestCameraPermission();
+    if (!cameraPermission) {
+      console.log("Camera permission denied");
+      return;
     }
+  }
 
-    function captureOutputDidOutputMetadataObjectsFromConnection(metadataObjects, connection) {
-      if (metadataObjects.length > 0) {
-        const qrCodeObject = metadataObjects[0];
-        qrCodeData = qrCodeObject.stringValue;
-        console.log(`QR-Code: ${qrCodeData}`);
-        const licensePlate = extractLicensePlate(qrCodeData); // extrahieren des Kennzeichens aus dem QR-Code-Text
-        getLocation(licensePlate); // getLocation() mit dem Kennzeichen aufrufen
-        captureSession.stopRunning();
-        resolve(qrCodeData);
-      }
-    }
+  if (cameraPermission) {
+    const qrModalElement = document.getElementById('qrScannerModal');
+    const qrModalBodyElement = qrModalElement.querySelector('.modal-body');
 
-    function getCaptureDevice() {
-      const devices = AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo);
-      for (let i = 0; i < devices.length; i++) {
-        const device = devices[i];
-        if (device.position === AVCaptureDevicePositionBack) {
-          return device;
+    qrModalBodyElement.appendChild(video);
+
+    myModal = new bootstrap.Modal(qrModalElement, {
+      keyboard: false
+    });
+    
+    myModal.show();
+
+    qrModalElement.addEventListener('hidden.bs.modal', () => {
+      stopScanning(myModal);
+    });
+
+    const canvasElement = document.createElement('canvas');
+    canvasElement.style.display = 'none';
+    document.body.appendChild(canvasElement);
+
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: 'environment' } } });
+      video.srcObject = stream;
+      await video.play();
+
+      intervalId = setInterval(() => {
+        if (video.videoWidth > 0 && video.videoHeight > 0) {
+          const canvasContext = canvasElement.getContext('2d');
+          canvasElement.width = video.videoWidth;
+          canvasElement.height = video.videoHeight;
+          canvasContext.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
+          const imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
+          const code = jsQR(imageData.data, imageData.width, imageData.height);
+          if (code) {
+            const licensePlate = extractLicensePlate(code.data);
+            if (licensePlate) {
+              getLocation(licensePlate);
+              stopScanning();
+            }
+          }
         }
-      }
-      return AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo);
-    }
+      }, 100);
 
-  });
+      timeoutId = setTimeout(() => {
+        stopScanning();
+      }, 30000);
+    } catch (error) {
+      console.error(error);
+      stopScanning(myModal);
+    }
+  } else {
+    console.error('No camera permission');
+  }
 }
+
+export default scanQRCodeiOS;

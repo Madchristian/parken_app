@@ -43,6 +43,30 @@ export function hideProgressBar() {
     progressContainer.remove();
   }
 }
+export function startProgress() {
+  const progressBar = document.querySelector('#progress-container .progress-bar');
+  progressBar.style.width = '0%';
+  progressBar.parentElement.parentElement.style.display = ''; // Show the progress bar
+
+  progressInterval = setInterval(() => {
+    let width = parseFloat(progressBar.style.width);
+    width += 0.1;
+    if (width >= 100) {
+      width = 100;
+      clearInterval(progressInterval);
+    }
+    progressBar.style.width = width + '%';
+  }, 10);
+}
+
+export function stopProgress() {
+  if (progressInterval) {
+    clearInterval(progressInterval);
+  }
+  const progressBar = document.querySelector('#progress-container .progress-bar');
+  progressBar.parentElement.parentElement.style.display = 'none'; // Hide the progress bar
+}
+
 
 // Beispielcode, um die Progressbar zu aktualisieren
 // Aktivieren Sie die Progressbar
