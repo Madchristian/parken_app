@@ -19,6 +19,11 @@ export async function scanQRCodeHandler() {
 
 function processQRCode(qrCodeData) {
   // Verarbeite das erkannte QRCode-Daten hier, z.B. extrahiere das Kfz-Kennzeichen
-  const licensePlate = qrCodeData; // Ersetzen Sie dies durch die tatsächliche Verarbeitung der QR-Codedaten
+  const licensePlate = qrCodeData; // The QR code data is directly assigned to the licensePlate variable
   getLocation(licensePlate); // Rufe die getLocation-Funktion mit dem Kfz-Kennzeichen auf
+// Make the device vibrate
+
+  if (navigator.vibrate) {
+  navigator.vibrate(200); // Vibrate for 200 milliseconds
+}
 }

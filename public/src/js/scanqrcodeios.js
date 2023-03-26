@@ -1,31 +1,11 @@
 import { getLocation } from './positionandsave.js';
 import { extractLicensePlate } from './extractLicensePlate.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-  // Get the modal element
-  const myModal = document.getElementById('qrScannerModal');
-
-  // Add event listeners to handle the modal's show and hide events
-  myModal.addEventListener('shown.bs.modal', () => {
-    startScanning(myModal);
-  });
-
-  myModal.addEventListener('hidden.bs.modal', () => {
-    stopScanning(myModal);
-  });
-
-  // Add event listener to handle the timeout
-  myModal.addEventListener('scanner-timeout', () => {
-    stopProgress();
-    const modal = bootstrap.Modal.getInstance(myModal);
-    modal.hide();
-  });
-});
-
 let cameraPermission = undefined;
 let stream = null;
 let intervalId;
 let timeoutId;
+let video;
 
 async function requestCameraPermission() {
   try {
@@ -36,9 +16,8 @@ async function requestCameraPermission() {
     cameraPermission = false;
   }
 }
-let myModal; // Move the myModal variable outside of the function
 
-function stopScanning(modal) {
+function stopScanning() {
   if (stream) {
     stream.getTracks().forEach((track) => track.stop());
     stream = null;
@@ -52,18 +31,15 @@ function stopScanning(modal) {
     timeoutId = null;
   }
   if (video) {
-    modal.querySelector('.modal-body').removeChild(video); // Remove the video element from the modal body
+    const qrModalElement = document.getElementById('qrScannerModal');
+    const qrModalBodyElement = qrModalElement.querySelector('.modal-body');
+    qrModalBodyElement.removeChild(video); // Remove the video element from the modal body
     video = null;
   }
 }
 
-myModal.addEventListener('hidden.bs.modal', () => {
-  stopScanning(qrModalElement);
-});
-
-
 export async function scanQRCodeiOS() {
-  const video = document.createElement('video');
+  video = document.createElement('video');
   video.setAttribute('autoplay', '');
   video.setAttribute('muted', '');
   video.setAttribute('playsinline', '');
@@ -88,14 +64,14 @@ export async function scanQRCodeiOS() {
 
     qrModalBodyElement.appendChild(video);
 
-    myModal = new bootstrap.Modal(qrModalElement, {
+    const myModal = new bootstrap.Modal(qrModalElement, {
       keyboard: false
     });
     
     myModal.show();
 
     qrModalElement.addEventListener('hidden.bs.modal', () => {
-      stopScanning(myModal);
+      stopScanning();
     });
 
     const canvasElement = document.createElement('canvas');
@@ -116,11 +92,10 @@ export async function scanQRCodeiOS() {
           const imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
           const code = jsQR(imageData.data, imageData.width, imageData.height);
           if (code) {
-            const licensePlate = extractLicensePlate(code.data);
-            if (licensePlate) {
-              getLocation(licensePlate);
-              stopScanning();
-            }
+            processQRCode(code.data);
+            stopScanning();
+         
+        
           }
         }
       }, 100);
@@ -130,7 +105,7 @@ export async function scanQRCodeiOS() {
       }, 30000);
     } catch (error) {
       console.error(error);
-      stopScanning(myModal);
+      stopScanning();
     }
   } else {
     console.error('No camera permission');

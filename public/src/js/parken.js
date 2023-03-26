@@ -2,15 +2,13 @@
 
 // Importieren der benötigten Funktionen und Variablen aus anderen Modulen
 import { getLocation } from './positionandsave.js';
-import { showProgressBar, hideProgressBar, updateProgressBar, startProgress, stopProgress } from './progress.js';
+import { updateProgressBar, startProgress, stopProgress } from './progress.js';
 import { scanQRCodeHandler} from './scanqrcodehandler.js';
 import { scanLicensePlate } from './licensePlateScanner.js';
 
 // Exportieren der benötigten Funktionen und Variablen für andere Module
 export {
   getLocation,
-  showProgressBar,
-  hideProgressBar,
   startProgress,
   stopProgress,
   updateProgressBar,

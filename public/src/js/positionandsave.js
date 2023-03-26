@@ -1,4 +1,4 @@
-import { showProgressBar, hideProgressBar, updateProgressBar } from "./progress.js";
+import { startProgress, stopProgress, updateProgressBar } from "./progress.js";
 
 async function saveData(licensePlate, latitude, longitude) {
   const apiUrl = "https://parken.cstrube.de/apiv3/save-data";
@@ -7,7 +7,7 @@ async function saveData(licensePlate, latitude, longitude) {
     latitude: latitude,
     longitude: longitude
   };
-  showProgressBar(); // Anzeigen des Ladebalkens
+  startProgress(); // Anzeigen des Ladebalkens
 
   try {
     const response = await fetch(apiUrl, {
@@ -24,7 +24,7 @@ async function saveData(licensePlate, latitude, longitude) {
 
       // Aktualisieren des Fortschrittsbalkens auf 100% und Ausblenden des Ladebalkens
       updateProgressBar(100);
-      hideProgressBar();
+      stopProgress();
       
       const swoosh = new Audio("/sound/swoosh.mp3");
       swoosh.play();
@@ -35,19 +35,20 @@ async function saveData(licensePlate, latitude, longitude) {
 
       // Aktualisieren des Fortschrittsbalkens auf 0% und Ausblenden des Ladebalkens
       updateProgressBar(0);
-      hideProgressBar();
+      stopProgress();
     }
   } catch (error) {
     console.error("Error sending data to server:", error);
 
     // Aktualisieren des Fortschrittsbalkens auf 0% und Ausblenden des Ladebalkens
     updateProgressBar(0);
-    hideProgressBar();
+    stopProgress();
   }
 }
+
 export function getLocation(licensePlate) {
   if (navigator.geolocation) {
-    showProgressBar(); // Anzeigen des Ladebalkens
+    startProgress(); // Anzeigen des Ladebalkens
     navigator.geolocation.getCurrentPosition(position => {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
@@ -57,7 +58,7 @@ export function getLocation(licensePlate) {
         console.error(error);
         console.log(data)
       }).finally(() => {
-        hideProgressBar(); // Ausblenden des Ladebalkens unabhängig davon, ob das Speichern erfolgreich war oder nicht
+        stopProgress(); // Ausblenden des Ladebalkens unabhängig davon, ob das Speichern erfolgreich war oder nicht
       });
     });
   } else {

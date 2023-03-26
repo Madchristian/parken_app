@@ -1,15 +1,20 @@
 import { getLocation } from "./positionandsave.js";
-import { showProgressBar, hideProgressBar, updateProgressBar } from "./progress.js";
+import { startProgress, stopProgress, updateProgressBar } from "./progress.js";
 
 // licensePlateScanner.js
 export const licensePlateFileInput = document.getElementById('licensePlateInput');
 
 // ...
 
-export async function scanLicensePlate(imageFile) {
-  showProgressBar();
+export async function scanLicensePlate(inputElement) {
+  const imageFile = inputElement.files[0];
+  if (!imageFile) {
+    console.error("No image file selected");
+    return;
+  }
+
+  startProgress();
   updateProgressBar(20); // Aktualisierung des Fortschrittsbalkens auf 20%
-  console.log(imageFile)
 
   // Erstellen Sie einen Worker
   const worker = await Tesseract.createWorker({
@@ -40,6 +45,6 @@ export async function scanLicensePlate(imageFile) {
   } catch (error) {
     console.error(error);
   } finally {
-    hideProgressBar();
+    stopProgress();
   }
 }
