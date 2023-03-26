@@ -36,6 +36,10 @@ function stopScanning() {
     qrModalBodyElement.removeChild(video); // Remove the video element from the modal body
     video = null;
   }
+  const qrModal = bootstrap.Modal.getInstance(document.getElementById('qrScannerModal'));
+  if (qrModal) {
+    qrModal.hide();
+  }
 }
 
 export async function scanQRCodeiOS() {
@@ -92,10 +96,9 @@ export async function scanQRCodeiOS() {
           const imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
           const code = jsQR(imageData.data, imageData.width, imageData.height);
           if (code) {
-            processQRCode(code.data);
+            const qrCodeData = code.data.toString();
+            processQRCode(qrCodeData);
             stopScanning();
-         
-        
           }
         }
       }, 100);
