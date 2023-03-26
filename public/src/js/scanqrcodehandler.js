@@ -17,7 +17,7 @@ export async function scanQRCodeHandler() {
   processQRCode(qrCodeData);
 }
 
-function processQRCode(qrCodeData) {
+export function processQRCode(qrCodeData) {
   // Verarbeite das erkannte QRCode-Daten hier, z.B. extrahiere das Kfz-Kennzeichen
   const licensePlate = qrCodeData; // The QR code data is directly assigned to the licensePlate variable
   getLocation(licensePlate); // Rufe die getLocation-Funktion mit dem Kfz-Kennzeichen auf

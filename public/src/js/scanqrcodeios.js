@@ -1,5 +1,5 @@
-import { getLocation } from './positionandsave.js';
-import { extractLicensePlate } from './extractLicensePlate.js';
+import { processQRCode } from './scanqrcodehandler.js';
+
 
 let cameraPermission = undefined;
 let stream = null;
