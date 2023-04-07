@@ -71,7 +71,7 @@ export async function scanQRCodeiOS() {
     const myModal = new bootstrap.Modal(qrModalElement, {
       keyboard: false
     });
-    
+
     myModal.show();
 
     qrModalElement.addEventListener('hidden.bs.modal', () => {

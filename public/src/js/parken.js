@@ -2,23 +2,20 @@
 
 // Importieren der benötigten Funktionen und Variablen aus anderen Modulen
 import { getLocation } from './positionandsave.js';
-import { updateProgressBar, startProgress, stopProgress } from './progress.js';
+import { stopSpinner, startSpinner } from './progress.js';
 import { scanQRCodeHandler} from './scanqrcodehandler.js';
 import { scanLicensePlate } from './licensePlateScanner.js';
 
 // Exportieren der benötigten Funktionen und Variablen für andere Module
 export {
   getLocation,
-  startProgress,
-  stopProgress,
-  updateProgressBar,
-  scanQRCodeHandler
+  scanQRCodeHandler,
+  stopSpinner,
+  startSpinner
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Hide progress bar initially
-  stopProgress();
-
+  stopSpinner();
   // Funktion zur Initialisierung der Event-Listener
   function init() {
     // Event-Listener für den "Position"-Button hinzufügen

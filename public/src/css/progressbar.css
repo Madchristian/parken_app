@@ -55,3 +55,16 @@
     }
   }
   
+  .spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 3rem;
+    background-color: #33343800;
+  }
+  
+  .spinner-border {
+    width: 4rem;
+    height: 4rem;
+    border-width: 0.25rem;
+  }
