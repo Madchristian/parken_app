@@ -1,12 +1,20 @@
 #qrScannerModal .modal-content {
-    background-color: #3233353b; /* Hintergrundfarbe ändern */
-    color: #000; /* Textfarbe anpassen */
-    border: 0;
+    background-color: #21222370; /* Hintergrundfarbe ändern */
+    color: #06ea06; /* Textfarbe anpassen */
+    border: 1px;
     border-radius: 10px; /* Runde Ecken hinzufügen */
+    
   }
+#qrScannerModal .modal-title {
+  line-height: 0;
+}
+#qrScannerModal .modal-header {
+  padding: 2rem 1rem;
+}
+
   #cookieModal .modal-content {
-    background-color: #ffffffa0; /* Hintergrundfarbe ändern */
+    background-color: #ffffffe0; /* Hintergrundfarbe ändern */
     color: #000; /* Textfarbe anpassen */
-    border: 1;
+    border: 1px;
     border-radius: 10px; /* Runde Ecken hinzufügen */
   }

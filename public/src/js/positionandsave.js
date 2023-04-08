@@ -1,6 +1,5 @@
 import { startSpinner, stopSpinner } from "./progress.js";
 import { showMessage } from "./messages.js";
-import { getCookie } from "./cookies.js";
 
 const recentSavedData = new Map();
 
@@ -15,7 +14,7 @@ async function saveData(licensePlate, latitude, longitude) {
   const cacheKey = JSON.stringify(data);
   if (recentSavedData.has(cacheKey)) {
     console.log("Data already saved recently, skipping save:", data);
-    alert("Daten wurden bereits erfasst.");
+    showMessage("Daten wurde schon gespeichert", "info");
     return;
   }
 
@@ -39,7 +38,7 @@ async function saveData(licensePlate, latitude, longitude) {
       // Remove the data from the cache after a specific time (e.g., 5 minutes)
       setTimeout(() => {
         recentSavedData.delete(cacheKey);
-      }, 5 * 60 * 1000);
+      }, 1 * 60 * 1000);
       stopSpinner();
       const swooshsound = new Audio("/sound/swoosh.mp3");
       swooshsound.play();

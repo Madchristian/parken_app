@@ -1,14 +1,12 @@
 // parken.js
 
 // Importieren der benötigten Funktionen und Variablen aus anderen Modulen
-import { getLocation } from './positionandsave.js';
 import { scanQRCodeHandler } from './scanqrcodehandler.js';
 import { scanLicensePlate } from './licensePlateScanner.js';
 import { stopSpinner } from './progress.js';
 
 // Exportieren der benötigten Funktionen und Variablen für andere Module
 export {
-  getLocation,
   scanQRCodeHandler
 };
 

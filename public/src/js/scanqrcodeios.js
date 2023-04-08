@@ -1,3 +1,5 @@
+import { getLocation } from "./positionandsave.js";
+
 let cameraPermission = undefined;
 let stream = null;
 let intervalId;
@@ -45,7 +47,7 @@ export async function scanQRCodeiOS() {
   video.setAttribute('muted', '');
   video.setAttribute('playsinline', '');
   video.style.width = '100%';
-  video.style.height = '100%'; // Change this from 'auto' to '100%'
+  video.style.height = '90%'; // Change this from 'auto' to '100%'
   video.style.backgroundColor = 'rgba(0, 0, 0, 0)'; // Set the background color to transparent
 
   const permissionStatus = await navigator.permissions.query({ name: 'camera' });
@@ -94,13 +96,19 @@ export async function scanQRCodeiOS() {
           const code = jsQR(imageData.data, imageData.width, imageData.height);
           if (code) {
             const qrCodeData = code.data.toString();
-            processQRCode(qrCodeData);
-            stopScanning();
-          
-
+            if (qrCodeData.trim() !== '') { // Check if the QR code data is not empty
+              if (navigator.vibrate) {
+                navigator.vibrate(200); // Vibrate for 200 milliseconds
+              }
+              const licensePlate = qrCodeData; 
+              stopScanning();
+              getLocation(licensePlate);
+            
+            }
           }
         }
       }, 100);
+      
 
       timeoutId = setTimeout(() => {
         stopScanning();

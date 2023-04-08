@@ -1,5 +1,5 @@
-import { getLocation } from './positionandsave.js';
-import { extractLicensePlate } from './extractLicensePlate.js';
+
+
 
 let cameraPermission = undefined;
 
@@ -9,7 +9,7 @@ export async function scanQRCodeAndroid() {
   video.setAttribute('muted', '');
   video.setAttribute('playsinline', '');
   video.style.width = '100%';
-  video.style.height = '100%'; // Change this from 'auto' to '100%'
+  video.style.height = '90%'; // Change this from 'auto' to '100%'
   video.style.backgroundColor = 'rgba(0, 0, 0, 0)'; // Set the background color to transparent
 
   async function requestCameraPermission() {
@@ -68,8 +68,11 @@ export async function scanQRCodeAndroid() {
           const code = jsQR(imageData.data, imageData.width, imageData.height);
           if (code) {
             const qrCodeData = code.data.toString();
-            processQRCode(qrCodeData);
-            stopScanning();
+            if (qrCodeData.trim() !== '') { // Check if the QR code data is not empty
+              stopScanning();
+              return qrCodeData;
+            
+            }
           }
         }
       }, 100);
