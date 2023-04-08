@@ -1,6 +1,12 @@
 .navbar-nav .nav-link {
-    color: #fff;
-  }
-  .brand-link {
-    color: white;
-  }
+  color: #fff;
+}
+
+.brand-link {
+  color: white;
+}
+
+.nav-link.active {
+  background-color: rgb(187, 2, 190); /* Hintergrundfarbe des aktiven Nav-Links */
+  color: #fff; /* Schriftfarbe des aktiven Nav-Links */
+}

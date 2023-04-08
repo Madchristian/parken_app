@@ -1,5 +1,6 @@
 import { getLocation } from "./positionandsave.js";
 import { startSpinner, stopSpinner } from "./progress.js";
+import { getCookie } from "./cookies.js";
 
 export const licensePlateFileInput = document.getElementById('licensePlateInput');
 

@@ -1,5 +1,6 @@
 import { startSpinner, stopSpinner } from "./progress.js";
 import { showMessage } from "./messages.js";
+import { getCookie } from "./cookies.js";
 
 const recentSavedData = new Map();
 
@@ -58,11 +59,10 @@ async function saveData(licensePlate, latitude, longitude) {
 }
 
 
-export function getLocation(licensePlate) {
-  
-  if (navigator.geolocation) {
-    startSpinner(); // Anzeigen des Ladebalkens
-    navigator.geolocation.getCurrentPosition(position => {
+export async function getLocation(licensePlate) {
+     if (navigator.geolocation) {
+      startSpinner();
+     navigator.geolocation.getCurrentPosition(position => {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
       console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);

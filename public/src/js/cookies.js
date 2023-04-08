@@ -46,11 +46,19 @@ export async function askForCookieConsent() {
     }
   }
 
+  export function setPermissionCookie() {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + 24 * 60 * 60 * 1000);
+    const cookieOptions = { expires: expires.toUTCString(), path: '/', SameSite: 'None', secure: true };
+    document.cookie = `erlaubnis=true; ${Object.entries(cookieOptions).map(([k, v]) => `${k}=${v}`).join('; ')}`;
+  }
+  
   export function setCookie(name, value, days) {
     const expires = new Date();
     expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
     const cookieOptions = { expires: expires.toUTCString(), path: '/', SameSite: 'None', secure: true };
     document.cookie = `${name}=${value}; ${Object.entries(cookieOptions).map(([k, v]) => `${k}=${v}`).join('; ')}`;
+
   }
   
   
