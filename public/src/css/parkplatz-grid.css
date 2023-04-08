@@ -26,3 +26,15 @@ body {
     background-image: url('pfad/zum/bild.jpg');
     background-size: cover;
   }
+
+  .btn-close {
+    background-color: transparent;
+    border: none;
+    color: green;
+    cursor: pointer;
+  }
+  
+  .btn-close:hover {
+    color: darkgreen;
+  }
+  

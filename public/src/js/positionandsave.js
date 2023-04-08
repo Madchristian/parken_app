@@ -59,6 +59,7 @@ async function saveData(licensePlate, latitude, longitude) {
 
 
 export function getLocation(licensePlate) {
+  
   if (navigator.geolocation) {
     startSpinner(); // Anzeigen des Ladebalkens
     navigator.geolocation.getCurrentPosition(position => {

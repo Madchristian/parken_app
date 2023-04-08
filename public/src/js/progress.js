@@ -3,9 +3,11 @@
 const spinnerContainer = document.getElementById("spinner-container");
 
 export function startSpinner() {
-  spinnerContainer.classList.remove("d-none"); // Anzeigen des Spinners
+  const spinnerContainer = document.getElementById('spinner-container');
+  spinnerContainer.classList.remove('hidden');
 }
 
 export function stopSpinner() {
-  spinnerContainer.classList.add("d-none"); // Ausblenden des Spinners
+  const spinnerContainer = document.getElementById('spinner-container');
+  spinnerContainer.classList.add('hidden');
 }

@@ -62,6 +62,9 @@
     height: 3rem;
     background-color: #33343800;
   }
+  #spinner-container.hidden {
+    display: none;
+  }
   
   .spinner-border {
     width: 4rem;

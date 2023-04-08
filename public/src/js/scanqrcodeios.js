@@ -1,21 +1,9 @@
 import { processQRCode } from './scanqrcodehandler.js';
 
-
-let cameraPermission = undefined;
 let stream = null;
 let intervalId;
 let timeoutId;
 let video;
-
-async function requestCameraPermission() {
-  try {
-    await window.navigator.mediaDevices.getUserMedia({ video: true });
-    cameraPermission = true;
-  } catch (error) {
-    console.error(error);
-    cameraPermission = false;
-  }
-}
 
 function stopScanning() {
   if (stream) {
@@ -42,7 +30,7 @@ function stopScanning() {
   }
 }
 
-export async function scanQRCodeiOS() {
+async function scanQRCodeiOS() {
   video = document.createElement('video');
   video.setAttribute('autoplay', '');
   video.setAttribute('muted', '');
@@ -51,16 +39,7 @@ export async function scanQRCodeiOS() {
   video.style.height = '100%'; // Change this from 'auto' to '100%'
   video.style.backgroundColor = 'rgba(0, 0, 0, 0)'; // Set the background color to transparent
 
-  const permissionStatus = await navigator.permissions.query({ name: 'camera' });
-  if (permissionStatus.state === 'granted') {
-    cameraPermission = true;
-  } else if (permissionStatus.state === 'prompt') {
-    await requestCameraPermission();
-    if (!cameraPermission) {
-      console.log("Camera permission denied");
-      return;
-    }
-  }
+  let cameraPermission = getCookie('cameraPermission'); // Check if camera permission is granted in cookie
 
   if (cameraPermission) {
     const qrModalElement = document.getElementById('qrScannerModal');
@@ -95,10 +74,16 @@ export async function scanQRCodeiOS() {
           canvasContext.drawImage(video, 0, 0, canvasElement.width, canvasElement.height);
           const imageData = canvasContext.getImageData(0, 0, canvasElement.width, canvasElement.height);
           const code = jsQR(imageData.data, imageData.width, imageData.height);
-          if (code) {
+          if (code && code.data) { // Check if code.data is not empty
             const qrCodeData = code.data.toString();
-            processQRCode(qrCodeData);
-            stopScanning();
+            if (qrCodeData.match(/^([A-Z]{1,3}-[A-Z0-9]{1,2}\d{1,4}[A-Z]{0,2})$/)) {
+              processQRCode(qrCodeData);
+              stopScanning();
+                // Make the device vibrate
+              if (navigator.vibrate) {
+              navigator.vibrate(200); // Vibrate for 200 milliseconds
+  }
+            }
           }
         }
       }, 100);
@@ -115,4 +100,4 @@ export async function scanQRCodeiOS() {
   }
 }
 
-export default scanQRCodeiOS;
+export { scanQRCodeiOS };
