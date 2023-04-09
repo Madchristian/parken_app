@@ -1,6 +1,5 @@
 import { getLocation } from "./positionandsave.js";
 import { startSpinner, stopSpinner } from "./progress.js";
-import { getCookie } from "./cookies.js";
 
 export const licensePlateFileInput = document.getElementById('licensePlateInput');
 
@@ -25,7 +24,6 @@ export async function scanLicensePlate(inputElement) {
     console.error("No image file selected");
     return;
   }
-
   startSpinner();
 
   try {
@@ -38,9 +36,9 @@ export async function scanLicensePlate(inputElement) {
     });
 
     console.log(text);
-
+    const vehiclestatus = "gescannt"
     const licensePlate = text;
-    getLocation(licensePlate);
+    getLocation(licensePlate, vehiclestatus);
   } catch (error) {
     console.error(error);
   } finally {

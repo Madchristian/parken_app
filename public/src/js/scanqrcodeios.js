@@ -41,7 +41,7 @@ function stopScanning() {
   }
 }
 
-export async function scanQRCodeiOS() {
+export async function scanQRCodeiOS(vehiclestatus) {
   video = document.createElement('video');
   video.setAttribute('autoplay', '');
   video.setAttribute('muted', '');
@@ -102,7 +102,7 @@ export async function scanQRCodeiOS() {
               }
               const licensePlate = qrCodeData; 
               stopScanning();
-              getLocation(licensePlate);
+              getLocation(licensePlate, vehiclestatus);
             
             }
           }

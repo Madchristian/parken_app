@@ -1,0 +1,11 @@
+  .license-plate-icon {
+    display: flex;
+    align-items: center;
+    height: 10px;
+  }
+  
+  .license-plate-icon span {
+    margin: 0;
+    line-height: 10px;
+  }
+  

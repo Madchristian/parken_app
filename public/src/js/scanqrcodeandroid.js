@@ -3,7 +3,7 @@
 
 let cameraPermission = undefined;
 
-export async function scanQRCodeAndroid() {
+export async function scanQRCodeAndroid(vehiclestatus) {
   const video = document.createElement('video');
   video.setAttribute('autoplay', '');
   video.setAttribute('muted', '');
@@ -69,8 +69,9 @@ export async function scanQRCodeAndroid() {
           if (code) {
             const qrCodeData = code.data.toString();
             if (qrCodeData.trim() !== '') { // Check if the QR code data is not empty
+              const licensePlate = qrCodeData; 
               stopScanning();
-              return qrCodeData;
+              getLocation(licensePlate, vehiclestatus);
             
             }
           }

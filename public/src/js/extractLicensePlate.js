@@ -1,4 +1,4 @@
-export function extractLicensePlate(qrCodeText) {
+export function extractLicensePlate(qrCodeText, vehiclestatus) {
   const licensePlateRegex = /Kennzeichen:\s*([A-ZÄÖÜ0-9]+[-]?[A-ZÄÖÜ0-9]*)/;
     const match = licensePlateRegex.exec(qrCodeText);
     if (match) {

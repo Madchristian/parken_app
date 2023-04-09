@@ -3,12 +3,13 @@ import { showMessage } from "./messages.js";
 
 const recentSavedData = new Map();
 
-async function saveData(licensePlate, latitude, longitude) {
+async function saveData(licensePlate, latitude, longitude, vehiclestatus) {
   const apiUrl = "https://parken.cstrube.de/apiv3/save-data";
   const data = {
     licensePlate: licensePlate,
     latitude: latitude,
-    longitude: longitude
+    longitude: longitude,
+    vehiclestatus: vehiclestatus
   };
 
   const cacheKey = JSON.stringify(data);
@@ -58,7 +59,7 @@ async function saveData(licensePlate, latitude, longitude) {
 }
 
 
-export async function getLocation(licensePlate) {
+export async function getLocation(licensePlate, vehiclestatus) {
      if (navigator.geolocation) {
       startSpinner();
      navigator.geolocation.getCurrentPosition(position => {
@@ -66,7 +67,7 @@ export async function getLocation(licensePlate) {
       const longitude = position.coords.longitude;
       console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
       console.log(licensePlate)
-      saveData(licensePlate, latitude, longitude).catch(error => {
+      saveData(licensePlate, latitude, longitude, vehiclestatus).catch(error => {
         console.error(error);
         console.log(data)
       }).finally(() => {

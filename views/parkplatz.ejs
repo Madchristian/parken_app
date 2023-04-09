@@ -1,26 +1,24 @@
 <!--parkplatz.ejs-->
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="de" data-bs-theme="dark">
 
 <head>
   <%- include('header') %>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Parkplatz</title>
-    <link rel="stylesheet" href="./src/css/parkplatz-grid.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css" integrity="sha512-KdMgvP2eQ1fF6At61ZTkjK9enE9f6G7b6pcg+fF+6U7/6CkmZJR5pBxFU23b6T0E/a9f/6MstY6UJwgwACDg2A==" crossorigin="anonymous" />
+    <link rel="stylesheet" type="text/css" href="/src/css/clock.css">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Leaflet CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-      integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-      crossorigin="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.css" crossorigin="" />
 
     <!-- Leaflet JavaScript -->
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-      integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-      crossorigin=""></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.js" crossorigin=""></script>
 </head>
+
 <body class="bg-dark">
   <nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: #18181c;">
     <div class="container-fluid">
@@ -32,7 +30,7 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="/">Statistik</a>
+            <a class="nav-link" aria-current="page" href="/">Info</a>
           </li>
           <li class="nav-item">
             <a class="nav-link active" href="parkplatz">Parkplatz</a>
@@ -64,25 +62,21 @@
   </nav>
 
 
-    <div class="container-fluid">
-      <div id="map" style="width: 100%; height: 100vh;"></div>
-      <div id="spinner-container" class="position-absolute bottom-0 start-50 translate-middle hidden" style="z-index: 2;">
-        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
-          <span class="visually-hidden">Loading...</span>
-        </div>
-      </div>
-      
-        </div>
+  <div class="container-fluid">
+    <div id="map" style="width: 100%; height: 100vh;"></div>
+    <div id="spinner-container" class="position-absolute bottom-0 start-50 translate-middle hidden" style="z-index: 2;">
+      <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
     </div>
     <script>
- 
+
     </script>
     <!-- Einbindung von Bootstrap JS -->
     <script type="module" src="/src/js/parkplatz.js"></script>
     <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./node_modules/jquery/dist/jquery.min.js"></script>
-    
+
 </body>
 
 </html>
