@@ -1,17 +1,20 @@
 import { startSpinner, stopSpinner } from "./progress.js";
 
+let socket;
+let reconnectAttempts = 0;
+const MAX_RECONNECT_ATTEMPTS = 3;
+
 async function deleteParkedCar(id, map) {
   try {
     const confirmDelete = confirm("Fahrzeug abgeholt?");
     if (!confirmDelete) {
       return;
     }
-    const response = await fetch(`/apiv3/delete-vehicle`, {
+    const response = await fetch(`/apiv3/delete-vehicle?id=${id}`, {
       method: "DELETE",
       headers: {
         'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ id })
+      }
     });
 
     if (!response.ok) {
@@ -28,6 +31,7 @@ async function deleteParkedCar(id, map) {
     alert("Error deleting parked car");
   }
 }
+
 
 document.addEventListener("DOMContentLoaded", async function () {
   // Initialize the map
@@ -78,82 +82,111 @@ document.addEventListener("DOMContentLoaded", async function () {
       });
       const marker = L.marker([car.latitude, car.longitude], { icon: icon }).addTo(map);
 
-      marker.on('popupopen', () => {
-        document.getElementById(`delete-${car._id}`).addEventListener('click', () => {
+      // Event-Listener für den Lösch-Button hinzufügen
+      const deleteButton = document.getElementById(`delete-${car._id}`);
+      if (deleteButton) {
+        deleteButton.addEventListener('click', (event) => {
+          event.stopPropagation(); // Verhindert, dass das Klick-Event auf den Marker selbst weitergeleitet wird
           deleteParkedCar(car._id, map);
         });
-      });
+      }
+
+
       stopSpinner();
       marker._leaflet_id = car._id;
     });
 
-    // Connect to the vehicle_queue WebSocket to receive updates
-    try {
-      const socket = new WebSocket(`wss://${window.location.host}/apiv3/vehicle-queue`);
-    
-      socket.onerror = function (event) {
-        console.error("WebSocket error observed:", event);
-        alert("WebSocket connection error");
-      };
-    
-      socket.onmessage = async function (event) {
-        try {
-          console.log("Raw data received from WebSocket:", event.data);
-          const receivedData = JSON.parse(event.data);
-          
-          if (receivedData.type === 'newCar') {
-            const carId = receivedData.carId;
-            const response = await fetch(`/apiv3/parked-cars/${carId}`);
-            const carData = await response.json();
-    
-            if (carData) {
-              const car = carData;
-    
-              // Update the marker for the car or add a new marker if it doesn't exist yet
-              const existingMarker = map._layers[car._id];
-              if (existingMarker) {
-                existingMarker.setLatLng([car.latitude, car.longitude]);
-              } else {
-                const icon = L.divIcon({
-                  className: 'license-plate-icon',
-                  html: `
-                    <div style="display: inline-block; background-color: white; color: black; border: 1px solid black; padding: 2px 2px; font-size: 10px; font-weight: bold; border-radius: 3px; white-space: nowrap;">
-                      ${car.licensePlate}
-                      <button id="delete-${car._id}" class="btn-delete" aria-label="Close" style="cursor: pointer; padding-left: 2px; padding: 1px 4px;">
-                        <i class="fa-sharp fa-regular fa-trash-can-list"></i>
-                      </button>
-                    </div>`
-                });
-    
-                const marker = L.marker([car.latitude, car.longitude], { icon: icon }).addTo(map);
-    
-                marker.on('popupopen', () => {
-                  document.getElementById(`delete-${car._id}`).addEventListener('click', () => {
-                    deleteParkedCar(car._id, map);
+
+
+
+    function connectWebSocket() {
+      try {
+        socket = new WebSocket(`wss://${window.location.host}/apiv3/vehicle-queue`);
+
+        socket.onerror = function (event) {
+          console.error("WebSocket error observed:", event);
+          alert("WebSocket connection error");
+        };
+
+        socket.onmessage = async function (event) {
+          try {
+            console.log("Raw data received from WebSocket:", event.data);
+            const receivedData = JSON.parse(event.data);
+        
+            if (receivedData.type === 'update') {
+              const carId = receivedData.carId;
+              const response = await fetch(`/apiv3/parked-cars/${carId}`);
+              const carData = await response.json();
+        
+              if (carData) {
+                const car = carData;
+        
+                // Update the marker for the car or add a new marker if it doesn't exist yet
+                const existingMarker = map._layers[car._id];
+                if (existingMarker) {
+                  existingMarker.setLatLng([car.latitude, car.longitude]);
+                } else {
+                  const icon = L.divIcon({
+                    className: 'license-plate-icon',
+                    html: `
+                      <div style="display: inline-block; background-color: white; color: black; border: 1px solid black; padding: 2px 2px; font-size: 10px; font-weight: bold; border-radius: 3px; white-space: nowrap;">
+                        ${car.licensePlate}
+                        <button id="delete-${car._id}" class="btn-delete" aria-label="Close" style="cursor: pointer; padding-left: 4px; padding: 4px 8px;">
+                          <i class="fa-sharp fa-regular fa-trash-can-list"></i>
+                        </button>
+                      </div>`
                   });
-                });
-    
-                marker._leaflet_id = car._id;
+
+                  const marker = L.marker([car.latitude, car.longitude], { icon: icon }).addTo(map);
+
+                  // Event-Listener für den Lösch-Button hinzufügen
+                  const deleteButton = document.getElementById(`delete-${car._id}`);
+                  if (deleteButton) {
+                    deleteButton.addEventListener('click', (event) => {
+                      event.stopPropagation(); // Verhindert, dass das Klick-Event auf den Marker selbst weitergeleitet wird
+                      deleteParkedCar(car._id, map);
+                    });
+                  }
+                } 
+              }
+            } else if (receivedData.type === 'delete') {
+              const carId = receivedData.carId;
+        
+              // Remove the marker for the deleted vehicle from the map
+              const marker = map._layers[carId];
+              if (marker) {
+                marker.remove();
               }
             }
+          } catch (error) {
+            console.error("Error processing WebSocket message:", error);
           }
-        } catch (error) {
-          console.error("Error processing WebSocket message:", error);
-        }
-      };
-    
-    } catch (error) {
-      console.error("WebSocket connection error:", error);
-      alert("WebSocket connection error");
-    }
-    
+        };
 
+        socket.onclose = function (event) {
+          console.error("WebSocket connection closed:", event);
+          if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+            setTimeout(() => {
+              reconnectAttempts++;
+              console.log(`Trying to reconnect (attempt ${reconnectAttempts})...`);
+              connectWebSocket();
+            }, 5000);
+          } else {
+            console.error(`WebSocket connection failed after ${MAX_RECONNECT_ATTEMPTS} attempts.`);
+          }
+        };
+
+      } catch (error) {
+        console.error("WebSocket connection error:", error);
+        alert("WebSocket connection error");
+      }
+    }
+
+    connectWebSocket();
     stopSpinner();
+
   } catch (error) {
-    console.error("Error at:", error.stack);
-    console.error("Error message:", error.message);
-    alert("Error fetching parked cars from database");
+    console.error("");
+
   }
 });
-
-

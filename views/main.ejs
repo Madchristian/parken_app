@@ -53,10 +53,10 @@
   </nav>
   <div class="container-fluid"></div>
   <h1>Parkplatz Manager</h1>
-  <p>Es gibt auch eine interaktive Karte, die die verfügbaren Parkplätze in der Umgebung anzeigt und die Möglichkeit
-    bietet, diese zu reservieren. Nutzer können auch ihre bevorzugten Parkplätze speichern und verwalten sowie ihre
-    Reservierungshistorie einsehen. Die Webseite bietet auch eine einfache Möglichkeit für Parkplatzbetreiber, ihre
-    Parkplätze auf der Plattform anzubieten und zu verwalten.</p>
+  <div>
+    <p>Beschreibung:</p>
+    <p>Der Vehicle_data_controller ist Teil eines Back-Ends für eine Anwendung, die Fahrzeugdaten verarbeitet und speichert. Er beinhaltet eine Reihe von Funktionen, die für die Verarbeitung von Daten von verschiedenen Datenquellen (z.B. MongoDB, RabbitMQ) verantwortlich sind. Der Controller sorgt auch dafür, dass diese Daten für den Zugriff durch das Front-End verfügbar sind.</p>
+    <p>Das Front-End der Anwendung kommuniziert über eine WebSocket-Verbindung mit dem Back-End, um Echtzeit-Updates über die Veränderungen der Fahrzeugdaten zu erhalten. Wenn ein neues Fahrzeug hinzugefügt wird, wird ein entsprechendes Signal über die WebSocket-Verbindung an das Front-End gesendet. Das Front-End lädt dann die Daten des neuen Fahrzeugs mithilfe der vom Vehicle_data_controller bereitgestellten Funktionen und aktualisiert die Benutzeroberfläche entsprechend.</p>
   </div>
   <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="./node_modules/jquery/dist/jquery.min.js"></script>
