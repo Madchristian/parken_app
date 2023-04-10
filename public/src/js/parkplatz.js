@@ -6,6 +6,7 @@ let reconnectAttempts = 0;
 const MAX_RECONNECT_ATTEMPTS = 10;
 
 const markers = [];
+let markerGroup; // Definieren Sie markerGroup auf globaler Ebene
 
 function initializeWebSocket() {
   if (socket && socket.readyState === WebSocket.OPEN) {
@@ -48,7 +49,7 @@ async function deleteParkedCar(id, locationName, map) {
     if (marker) {
       map.removeLayer(marker);
       markerGroup.removeLayer(marker);
-      
+
     }
   } catch (error) {
     console.error("Error deleting parked car:", error);
@@ -65,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   });
 
   // Create a feature group to group the markers
-  const markerGroup = L.featureGroup().addTo(map);
+  markerGroup = L.featureGroup().addTo(map);
 
 
 // Add a tile layer to the map
@@ -154,7 +155,8 @@ function connectWebSocket() {
 
         if (receivedData.type === 'update') {
           const _id = receivedData._id;
-          const response = await fetch(`/apiv3/parked-cars/${_id}`);
+          const locationName = receivedData.locationName;
+          const response = await fetch(`/apiv3/parked-cars/${_id}/${locationName}`);
           const carData = await response.json();
 
           if (carData) {
