@@ -28,7 +28,7 @@
 
 <body class="bg-dark">
 
-  <nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: #18181c;">
+  <nav class="navbar navbar-expand bg-body-tertiary" style="background-color: #18181c;">
     <div class="container-fluid">
       <a class="navbar-brand brand-link" href="#">PA</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -41,7 +41,7 @@
             <a class="nav-link" href="/">Info</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="parkplatz">Parkplatz</a>
+            <a class="nav-link" href="parkplatz">Parkplatz <i class="fa-solid fa-lock"></i></a>
           </li>
           <li class="nav-item">
             <a class="nav-link active" href="parken">Parken</a>
@@ -60,35 +60,28 @@
             </ul>
           </li>
         </ul>
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
       </div>
     </div>
   </nav>
-
-
   <div class="container text-center my-5 position-relative">
     <div class="d-grid gap-5 col-6 mx-auto">
       <button id="scanLicensePlateButton" type="button" class="btn btn-outline-info btn-lg">
-        <i class="fa-solid fa-camera"></i> Kennzeichen 
+        <i class="fa-solid fa-camera"></i> Kennzeichen
         <button id="scanQRCodeButtonCheck" type="button" class="btn btn-outline-danger btn-lg">
-          <i class="fa-solid fa-qrcode"></i>   Prüfer  <i class="fa-solid fa-list-check"></i>
+          <i class="fa-solid fa-qrcode"></i> Prüfer <i class="fa-solid fa-list-check"></i>
         </button>
       </button>
       <button id="scanQRCodeButtonMech" type="button" class="btn btn-outline-warning btn-lg">
-        <i class="fa-solid fa-qrcode"></i>  Werkstatt  <i class="fa-solid fa-screwdriver-wrench"></i>
+        <i class="fa-solid fa-qrcode"></i> Werkstatt <i class="fa-solid fa-screwdriver-wrench"></i>
       </button>
       <button id="scanQRCodeButtonWash" type="button" class="btn btn-outline-success btn-lg">
-        <i class="fa-solid fa-qrcode"></i>  Abholbereit  <i class="fa-solid fa-square-parking"></i>
+        <i class="fa-solid fa-qrcode"></i> Abholbereit <i class="fa-solid fa-square-parking"></i>
       </button>
     </div>
     <div class="toast-container position-static">
       <!-- Success toast -->
-      <div
-        class="toast align-items-center text-white bg-success top-0 start-50 translate-middle-x"
-        role="alert" aria-live="assertive" aria-atomic="true" style="z-index: 1;">
+      <div class="toast align-items-center text-white bg-success top-0 start-50 translate-middle-x" role="alert"
+        aria-live="assertive" aria-atomic="true" style="z-index: 1;">
         <div class="d-flex">
           <div class="toast-body">
             <i class="bi bi-check-circle-fill me-2"></i>
@@ -98,11 +91,9 @@
             aria-label="Close"></button>
         </div>
       </div>
-
       <!-- Error toast -->
-      <div
-        class="toast align-items-center text-white bg-danger top-0 start-50 translate-middle-x"
-        role="alert" aria-live="assertive" aria-atomic="true" style="z-index: 1;">
+      <div class="toast align-items-center text-white bg-danger top-0 start-50 translate-middle-x" role="alert"
+        aria-live="assertive" aria-atomic="true" style="z-index: 1;">
         <div class="d-flex">
           <div class="toast-body">
             <i class="bi bi-exclamation-circle-fill me-2"></i>
@@ -113,8 +104,6 @@
         </div>
       </div>
     </div>
-
-
     <div class="container d-flex justify-content-center align-items-center position-relative">
       <div id="qrCodeContainer">
         <canvas id="qrCodeCanvas"></canvas>
@@ -133,7 +122,6 @@
           </div>
         </div>
       </div>
-
       <div id="spinner-container" class="position-absolute bottom-0 start-50 translate-middle" style="z-index: 2;">
         <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
           <span class="visually-hidden">Loading...</span>

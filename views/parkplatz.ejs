@@ -8,28 +8,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Parkplatz</title>
     <link rel="stylesheet" type="text/css" href="/src/css/clock.css">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-      crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.css" crossorigin="" />
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"
-      integrity="sha512-6ZCLMiYwTeli2rVh3XAPxy3YoR5fVxGdH/pz+KMCzRY2M65Emgkw00Yqmhh8qLGeYQ3LbVZGdmOX9KUjSKr0TA=="
-      crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"
-      integrity="sha512-mQ77VzAakzdpWdgfL/lM1ksNy89uFgibRQANsNneSTMD/bj0Y/8+94XMwYhnbzx8eki2hrbPpDm0vD0CiT2lcg=="
-      crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./node_modules/leaflet.markercluster/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="./node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css" />
     <!-- Leaflet JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.js" crossorigin=""></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"
-      integrity="sha512-OFs3W4DIZ5ZkrDhBFtsCP6JXtMEDGmhl0QPlmWYBJay40TT1n3gt2Xuw8Pf/iezgW9CdabjkNChRqozl/YADmg=="
-      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="./node_modules/leaflet.markercluster/dist/leaflet.markercluster-src.js"></script>
 </head>
 
 <body class="bg-dark">
-  <nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: #18181c;">
+  <nav class="navbar navbar-expand-md bg-body-tertiary" style="background-color: #18181c;">
     <div class="container-fluid">
       <a class="navbar-brand brand-link" href="#">PA</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -42,7 +31,7 @@
             <a class="nav-link" aria-current="page" href="/">Info</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active" href="parkplatz">Parkplatz</a>
+            <a class="nav-link active" href="parkplatz">Parkplatz <i class="fa-solid fa-unlock-keyhole"></i></a>
           </li>
 
           <li class="nav-item">
@@ -61,14 +50,25 @@
               <li><a class="dropdown-item" href="#">Something else here</a></li>
             </ul>
           </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Standort
+            </a>
+            <ul class="dropdown-menu" id="locationDropdown">
+              <!-- Location list items will be populated here -->
+            </ul>
+          </li>
         </ul>
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
+        <form class="d-flex" role="search" id="searchForm">
+          <input class="form-control me-2" type="search" placeholder="Kennzeichen" aria-label="Search" id="searchInput">
+          <button class="btn btn-outline-success" type="submit">Suche</button>
         </form>
+        
       </div>
     </div>
   </nav>
+</body>
+
 
 
   <div class="container-fluid">
@@ -79,6 +79,28 @@
       </div>
     </div>
     <script>
+  async function fetchLocationData() {
+    try {
+      const response = await fetch('/apiv3/get-collection-names');
+      const data = await response.json();
+      const locationDropdown = document.getElementById('locationDropdown');
+
+      data.forEach((location) => {
+        const listItem = document.createElement('li');
+        const linkItem = document.createElement('a');
+        linkItem.classList.add('dropdown-item');
+        linkItem.href = '#';
+        linkItem.textContent = location;
+        listItem.appendChild(linkItem);
+        locationDropdown.appendChild(listItem);
+      });
+    } catch (error) {
+      console.error('Error fetching location data');
+    }
+  }
+
+  fetchLocationData();
+</script>
 
     </script>
     <!-- Einbindung von Bootstrap JS -->

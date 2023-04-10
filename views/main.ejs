@@ -12,7 +12,7 @@
 </head>
 
 <body class="bg-dark">
-  <nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: #18181c;">
+  <nav class="navbar navbar-expand bg-body-tertiary" style="background-color: #18181c;">
     <div class="container-fluid">
       <a class="navbar-brand brand-link" href="#">PA</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -25,7 +25,7 @@
             <a class="nav-link active" aria-current="page" href="/">Info</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="parkplatz">Parkplatz</a>
+            <a class="nav-link" href="parkplatz">Parkplatz <i class="fa-solid fa-lock"></i></a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="parken">Parken</a>
@@ -45,38 +45,55 @@
           </li>
 
         </ul>
-        <form class="d-flex" role="search">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+
       </div>
     </div>
   </nav>
-  <div class="container-fluid"></div>
-  <h1>Parkplatz Manager</h1>
-  <div>
-    <p>Beschreibung:</p>
-    <p>Der Vehicle_data_controller ist Teil eines Back-Ends für eine Anwendung, die Fahrzeugdaten verarbeitet und
-      speichert. Er beinhaltet eine Reihe von Funktionen, die für die Verarbeitung von Daten von verschiedenen
-      Datenquellen (z.B. MongoDB, RabbitMQ) verantwortlich sind. Der Controller sorgt auch dafür, dass diese Daten für
-      den Zugriff durch das Front-End verfügbar sind.</p>
-    <p>Das Front-End der Anwendung kommuniziert über eine WebSocket-Verbindung mit dem Back-End, um Echtzeit-Updates
-      über die Veränderungen der Fahrzeugdaten zu erhalten. Wenn ein neues Fahrzeug hinzugefügt wird, wird ein
-      entsprechendes Signal über die WebSocket-Verbindung an das Front-End gesendet. Das Front-End lädt dann die Daten
-      des neuen Fahrzeugs mithilfe der vom Vehicle_data_controller bereitgestellten Funktionen und aktualisiert die
-      Benutzeroberfläche entsprechend.</p>
-      <p>Update 9.4.23: Heute habe ich an meiner Parkplatz-Webanwendung gearbeitet und mehrere neue Funktionen hinzugefügt. Hier ist eine Zusammenfassung der Änderungen:</p>
-<ol>
-  <li><strong>Analoguhr hinzugefügt:</strong> Ich habe eine Analoguhr-Funktion (getAnalogClock()) hinzugefügt, die den Zeitstempel eines geparkten Autos nimmt und die Uhrzeiger entsprechend positioniert. Diese Uhr wird nun in den Kartenmarkierungen angezeigt, um die Parkzeit des Autos anzuzeigen.</li>
-  <li><strong>Fahrzeugstatus-Icons:</strong> Abhängig vom Fahrzeugstatus (Mech oder Wash) wird nun ein unterschiedliches Symbol in den Kartenmarkierungen angezeigt. Ich habe die Funktion getIconClass() hinzugefügt, um das richtige Symbol basierend auf dem Fahrzeugstatus zurückzugeben.</li>
-  <li><strong>Löschen-Button in Markierungen:</strong> Ich habe einen Löschen-Button in jeder Kartenmarkierung hinzugefügt. Dieser Button erlaubt es mir, ein Auto als abgeholt zu markieren und es aus der Karte zu entfernen. Wenn der Button geklickt wird, wird die deleteParkedCar() Funktion aufgerufen, die das Auto aus der Datenbank löscht und die Markierung von der Karte entfernt.</li>
-  <li><strong>WebSocket-Verbindung:</strong> Eine WebSocket-Verbindung wurde implementiert, um Echtzeit-Aktualisierungen der geparkten Autos zu erhalten. Die WebSocket-Verbindung wird hergestellt, sobald die Seite geladen ist. Wenn neue Daten über die WebSocket-Verbindung empfangen werden, werden die Kartenmarkierungen entsprechend aktualisiert oder gelöscht.</li>
-  <li><strong>Automatisches Wiederverbinden des WebSockets:</strong> Wenn die WebSocket-Verbindung unterbrochen wird, versucht die Anwendung, die Verbindung automatisch bis zu einer maximalen Anzahl von Versuchen (MAX_RECONNECT_ATTEMPTS) wiederherzustellen.</li>
-</ol>
-<p>Insgesamt habe ich die Funktionalität meiner Parkplatz-Webanwendung erweitert, um den Fahrzeugstatus, eine Analoguhr und einen Löschen-Button in den Kartenmarkierungen anzuzeigen, sowie Echtzeit-Aktualisierungen über eine WebSocket-Verbindung zu ermöglichen.</p>
-  </div>
-  <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+  <div class="container-fluid py-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <h1 class="text-center mb-4">Parkplatz Manager</h1>
+        <div class="card text-white bg-dark mb-3" style="max-width: 48rem;">
+          <div class="card-body">
+            <h2>Beschreibung:</h2>
+            <p>Der Vehicle_data_controller ist Teil eines Back-Ends für eine Anwendung, die Fahrzeugdaten verarbeitet
+              und speichert. Er beinhaltet eine Reihe von Funktionen, die für die Verarbeitung von Daten von
+              verschiedenen Datenquellen (z.B. MongoDB, RabbitMQ) verantwortlich sind. Der Controller sorgt auch dafür,
+              dass diese Daten für den Zugriff durch das Front-End verfügbar sind.</p>
+            <p>Das Front-End der Anwendung kommuniziert über eine WebSocket-Verbindung mit dem Back-End, um
+              Echtzeit-Updates über die Veränderungen der Fahrzeugdaten zu erhalten. Wenn ein neues Fahrzeug hinzugefügt
+              wird, wird ein entsprechendes Signal über die WebSocket-Verbindung an das Front-End gesendet. Das
+              Front-End lädt dann die Daten des neuen Fahrzeugs mithilfe der vom Vehicle_data_controller
+              bereitgestellten Funktionen und aktualisiert die Benutzeroberfläche entsprechend.</p>
+          </div>
+        </div>
+        <div class="card text-white bg-dark mb-3" style="max-width: 48em;">
+          <div class="card-body">
+            <h2>Update 9.4.23:</h2>
+            <p>Heute habe ich an meiner Parkplatz-Webanwendung gearbeitet und mehrere neue Funktionen hinzugefügt. Hier
+              ist eine Zusammenfassung der Änderungen:</p>
+            <ol>
+              <li><strong><s>Analoguhr</s> DigitalUhr hinzugefügt:</strong> Ich habe eine Analoguhr-Funktion
+                (getAnalogClock()) hinzugefügt, die den Zeitstempel eines geparkten Autos nimmt und die Uhrzeiger
+                entsprechend positioniert. Diese Uhr wird nun in den Kartenmarkierungen angezeigt, um die Parkzeit des
+                Autos anzuzeigen.</li>
+              <li><strong>Fahrzeugstatus-Icons:</strong> Abhängig vom Fahrzeugstatus (Mech, Wash oder Checked) wird nun
+                ein unterschiedliches Symbol in den Kartenmarkierungen angezeigt. Ich habe die Funktion getIconClass()
+                hinzugefügt, um das richtige Symbol basierend auf dem Fahrzeugstatus zurückzugeben.</li>
+              <li><strong>Löschen-Button in Markierungen:</strong> Ich habe einen Löschen-Button in jeder
+                Kartenmarkierung hinzugefügt. Dieser Button erlaubt es mir, ein Auto als abgeholt zu markieren und es
+                aus der Karte zu entfernen. Wenn der Button geklickt wird, wird die deleteParkedCar() Funktion
+                aufgerufen, die das Auto aus der Datenbank löscht und die Markierung von der Karte entfernt.</li>
+              <li><strong>WebSocket-Verbindung:</strong> Eine WebSocket-Verbindung wurde implementiert, um
+                Echtzeit-Aktualisierungen der geparkten Autos zu erhalten. Die WebSocket-Verbindung wird hergestellt,
+                sobald die Seite geladen ist. Wenn neue Daten über die WebSocket-Verbindung empfangen werden.</li>
+
+              <p>Insgesamt habe ich die Funktionalität meiner Parkplatz-Webanwendung erweitert, um den Fahrzeugstatus,
+                eine Analoguhr und einen Löschen-Button in den Kartenmarkierungen anzuzeigen, sowie
+                Echtzeit-Aktualisierungen über eine WebSocket-Verbindung zu ermöglichen.</p>
+          </div>
+          <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+          <script src="./node_modules/jquery/dist/jquery.min.js"></script>
 </body>
 
 </html>
