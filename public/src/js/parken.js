@@ -33,6 +33,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Event-Listener für den "QR Code scannen"-Button hinzufügen
+    document.getElementById('scanQRCodeButtonCheck').addEventListener('click', async () => {
+      // Überprüfen, ob das Gerät mobil ist
+      const isMobile = window.innerWidth < 2734;
+      let vehiclestatus = "Check";
+      // Wenn das Gerät mobil ist, den QR-Code-Scanner öffnen
+      if (isMobile) {
+        try {
+          await scanQRCodeHandler(vehiclestatus);
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        // Andernfalls eine Fehlermeldung ausgeben
+        alert('This feature is only available on mobile devices.');
+      }
+    });
+  
+    // Event-Listener für den "QR Code scannen"-Button hinzufügen
     document.getElementById('scanQRCodeButtonMech').addEventListener('click', async () => {
       // Überprüfen, ob das Gerät mobil ist
       const isMobile = window.innerWidth < 2734;

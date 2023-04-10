@@ -3,7 +3,6 @@ import { scanQRCodeiOS } from './scanqrcodeios.js';
 import { getLocation } from './positionandsave.js';
 
 export async function scanQRCodeHandler(vehiclestatus) {
-  let cameraPermission = undefined;
   const isMobile = window.innerWidth < 2734;
   let qrCodeData;
   if (isMobile) {

@@ -3,13 +3,14 @@ import { showMessage } from "./messages.js";
 
 const recentSavedData = new Map();
 
-async function saveData(licensePlate, latitude, longitude, vehiclestatus) {
+async function saveData(licensePlate, latitude, longitude, vehiclestatus, locationName) {
   const apiUrl = "https://parken.cstrube.de/apiv3/save-data";
   const data = {
     licensePlate: licensePlate,
     latitude: latitude,
     longitude: longitude,
-    vehiclestatus: vehiclestatus
+    vehiclestatus: vehiclestatus,
+    locationName: locationName
   };
 
   const cacheKey = JSON.stringify(data);
@@ -48,7 +49,7 @@ async function saveData(licensePlate, latitude, longitude, vehiclestatus) {
       console.error("Error saving data:", response.status, response.statusText);
       const errorsound = new Audio("/sound/error.mp3");
       errorsound.play();
-      showMessage("Ein Fehler ist aufgetreten, bitte spöter erneut vesuchen", "error"); 
+      showMessage("Ein Fehler ist aufgetreten, bitte spöter erneut vesuchen", "error");
       stopSpinner();
     }
 
@@ -59,20 +60,38 @@ async function saveData(licensePlate, latitude, longitude, vehiclestatus) {
 }
 
 
+async function getLocationName(latitude, longitude) {
+  const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`;
+  const response = await fetch(nominatimUrl);
+
+  if (response.ok) {
+    const data = await response.json();
+    return data.address.town || data.address.city || data.address.county;
+  } else {
+    console.error("Error fetching location name:", response.status, response.statusText);
+    throw new Error("Error fetching location name");
+  }
+}
+
+
 export async function getLocation(licensePlate, vehiclestatus) {
-     if (navigator.geolocation) {
-      startSpinner();
-     navigator.geolocation.getCurrentPosition(position => {
+  if (navigator.geolocation) {
+    startSpinner();
+    navigator.geolocation.getCurrentPosition(async position => {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
       console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-      console.log(licensePlate)
-      saveData(licensePlate, latitude, longitude, vehiclestatus).catch(error => {
+      console.log(licensePlate);
+
+      try {
+        const locationName = await getLocationName(latitude, longitude);
+        console.log("Location name:", locationName);
+        await saveData(licensePlate, latitude, longitude, vehiclestatus, locationName);
+        stopSpinner();
+      } catch (error) {
         console.error(error);
-        console.log(data)
-      }).finally(() => {
-        stopSpinner(); // Ausblenden des Ladebalkens unabhängig davon, ob das Speichern erfolgreich war oder nicht
-      });
+        stopSpinner();
+      }
     });
   } else {
     alert("Geolocation is not supported by this browser.");
