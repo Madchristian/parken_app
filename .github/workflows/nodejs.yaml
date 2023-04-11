@@ -26,6 +26,7 @@ jobs:
 
     steps:
     - name: Build and Deploy to Production
+      working-directory: /
       env:
         TERRAFORM_SSH_KEY: ${{ secrets.TERRAFORM_SSH_KEY }}
         SSH_USERNAME: christian
@@ -44,6 +45,7 @@ jobs:
 
     steps:
     - name: Build and Deploy to Development
+      working-directory: /
       env:
         TERRAFORM_SSH_KEY: ${{ secrets.TERRAFORM_SSH_KEY }}
         SSH_USERNAME: christian
