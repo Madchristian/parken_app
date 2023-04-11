@@ -1,4 +1,4 @@
-FROM node:19.9.0-alpine3.17
+FROM node:current-alpine3.17
 
 RUN npm install -g pm2
 
