@@ -5,9 +5,7 @@ on:
     branches:
       - main
       - dev
-defaults:
-  run:
-    working-directory: /
+
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -17,7 +15,8 @@ jobs:
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
-        node-version: '14.x'
+        node-version: '18.x'
+        cache: 'npm'
     - run: npm install
 
   deploy-to-prod:
@@ -26,7 +25,6 @@ jobs:
 
     steps:
     - name: Build and Deploy to Production
-      working-directory: ./parken_app
       env:
         TERRAFORM_SSH_KEY: ${{ secrets.TERRAFORM_SSH_KEY }}
         SSH_USERNAME: christian
@@ -45,7 +43,6 @@ jobs:
 
     steps:
     - name: Build and Deploy to Development
-      working-directory: ./parken_app
       env:
         TERRAFORM_SSH_KEY: ${{ secrets.TERRAFORM_SSH_KEY }}
         SSH_USERNAME: christian
