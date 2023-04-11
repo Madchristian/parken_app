@@ -11,25 +11,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: '18.x'
-        cache: 'npm'
-    - run: npm install
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+          cache: "npm"
+      - run: npm install
 
   connect-to-cf-tunnel:
     runs-on: ubuntu-latest
     needs: build-and-test
 
     steps:
-    - name: Setup Cloudflare Tunnel
-      uses: AnimMouse/setup-cloudflared@v1
-      with:
-        cloudflare_tunnel_credential: ${{ secrets.CLOUDFLARE_TUNNEL_CREDENTIAL }}
-        cloudflare_tunnel_configuration: ${{ secrets.CLOUDFLARE_TUNNEL_CONFIGURATION }}
-        cloudflare_tunnel_id: ${{ secrets.CLOUDFLARE_TUNNEL_ID }}
+      - name: Setup Cloudflare Tunnel
+        uses: AnimMouse/setup-cloudflared@v1
+        with:
+          cloudflare_tunnel_credential: ${{ secrets.CLOUDFLARE_TUNNEL_CREDENTIAL }}
+          cloudflare_tunnel_configuration: ${{ secrets.CLOUDFLARE_TUNNEL_CONFIGURATION }}
+          cloudflare_tunnel_id: ${{ secrets.CLOUDFLARE_TUNNEL_ID }}
 
   deploy-to-prod:
     runs-on: ubuntu-latest
@@ -37,19 +37,19 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Build and Deploy to Production
-      env:
-        TERRAFORM_SSH_KEY: ${{ secrets.TERRAFORM_SSH_KEY }}
-        SSH_USERNAME: christian
-        SSH_HOST: ssh2.cstrube.de
-        DOCKER_IMAGE_TAG: production
+      - uses: actions/checkout@v3
+      - name: Build and Deploy to Production
+        env:
+          TERRAFORM_SSH_KEY: ${{ secrets.TERRAFORM_SSH_KEY }}
+          SSH_USERNAME: christian
+          SSH_HOST: ssh2.cstrube.de
+          DOCKER_IMAGE_TAG: production
 
-      run: |
-        docker build -t parken_app:$DOCKER_IMAGE_TAG .
-        docker save -o parken_app.tar parken_app:$DOCKER_IMAGE_TAG
-        scp -i $TERRAFORM_SSH_KEY parken_app.tar $SSH_USERNAME@$SSH_HOST:/tmp/
-        ssh -i $TERRAFORM_SSH_KEY $SSH_USERNAME@127.0.0.1 -p 22 "docker load -i /tmp/parken_app.tar && docker stop parken_app || true && docker rm parken_app || true && docker run -d --name parken_app -p 3000:3000 parken_app:$DOCKER_IMAGE_TAG"
+        run: |
+          docker build -t parken_app:$DOCKER_IMAGE_TAG .
+          docker save -o parken_app.tar parken_app:$DOCKER_IMAGE_TAG
+          scp -i $TERRAFORM_SSH_KEY parken_app.tar $SSH_USERNAME@$SSH_HOST:/tmp/
+          ssh -i $TERRAFORM_SSH_KEY $SSH_USERNAME@127.0.0.1 -p 22 "docker load -i /tmp/parken_app.tar && docker stop parken_app || true && docker rm parken_app || true && docker run -d --name parken_app -p 3000:3000 parken_app:$DOCKER_IMAGE_TAG"
 
   deploy-to-dev:
     runs-on: ubuntu-latest
@@ -57,16 +57,16 @@ jobs:
     if: github.ref == 'refs/heads/dev'
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Build and Deploy to Development
-      env:
-        TERRAFORM_SSH_KEY: ${{ secrets.TERRAFORM_SSH_KEY }}
-        SSH_USERNAME: christian
-        SSH_HOST: ssh2.cstrube.de
-        DOCKER_IMAGE_TAG: development
+      - uses: actions/checkout@v3
+      - name: Build and Deploy to Development
+        env:
+          TERRAFORM_SSH_KEY: ${{ secrets.TERRAFORM_SSH_KEY }}
+          SSH_USERNAME: christian
+          SSH_HOST: ssh2.cstrube.de
+          DOCKER_IMAGE_TAG: development
 
-      run: |
-        docker build -t parken_app:$DOCKER_IMAGE_TAG .
-        docker save -o parken_app.tar parken_app:$DOCKER_IMAGE_TAG
-        scp -i $TERRAFORM_SSH_KEY parken_app.tar $SSH_USERNAME@$SSH_HOST:/tmp/
-        ssh -i $TERRAFORM_SSH_KEY $SSH_USERNAME@127.0.0.1 -p 22 "docker load -i /tmp/parken_app.tar && docker stop parken_app-dev || true && docker rm parken_app-dev || true && docker run -d --name parken_app-dev -p 3001:3001 parken_app:$DOCKER_IMAGE_TAG"
+        run: |
+          docker build -t parken_app:$DOCKER_IMAGE_TAG .
+          docker save -o parken_app.tar parken_app:$DOCKER_IMAGE_TAG
+          scp -i $TERRAFORM_SSH_KEY parken_app.tar $SSH_USERNAME@$SSH_HOST:/tmp/
+          ssh -i $TERRAFORM_SSH_KEY $SSH_USERNAME@127.0.0.1 -p 22 "docker load -i /tmp/parken_app.tar && docker stop parken_app-dev || true && docker rm parken_app-dev || true && docker run -d --name parken_app-dev -p 3001:3001 parken_app:$DOCKER_IMAGE_TAG"
