@@ -1,0 +1,41 @@
+name: Node.js CI
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14.x'
+    - run: npm install
+    - run: npm run build
+    - run: npm test
+
+  deploy-to-prod:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+    - name: Build and Deploy to Production
+      run: |
+        docker build -t parken_app:latest .
+        docker run -d --name parken_app -p 3000:3000 parken_app:latest
+
+  deploy-to-dev:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev'
+
+    steps:
+    - name: Build and Deploy to Development
+      run: |
+        docker build -t parken_app:dev .
+        docker run -d --name parken_app-dev -p 3001:3001 parken_app:dev
