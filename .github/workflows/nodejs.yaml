@@ -31,7 +31,7 @@ jobs:
         DOCKER_IMAGE_TAG: production
 
       run: |
-        docker build -t parken_app:$DOCKER_IMAGE_TAG .
+        docker build -t .:$DOCKER_IMAGE_TAG .
         docker save -o parken_app.tar parken_app:$DOCKER_IMAGE_TAG
         scp -i $TERRAFORM_SSH_KEY parken_app.tar $SSH_USERNAME@$SSH_HOST:/tmp/
         ssh -i $TERRAFORM_SSH_KEY $SSH_USERNAME@$SSH_HOST "docker load -i /tmp/parken_app.tar && docker stop parken_app || true && docker rm parken_app || true && docker run -d --name parken_app -p 3000:3000 parken_app:$DOCKER_IMAGE_TAG"
@@ -49,7 +49,7 @@ jobs:
         DOCKER_IMAGE_TAG: development
 
       run: |
-        docker build -t parken_app:$DOCKER_IMAGE_TAG .
+        docker build -t .:$DOCKER_IMAGE_TAG .
         docker save -o parken_app.tar parken_app:$DOCKER_IMAGE_TAG
         scp -i $TERRAFORM_SSH_KEY parken_app.tar $SSH_USERNAME@$SSH_HOST:/tmp/
         ssh -i $TERRAFORM_SSH_KEY $SSH_USERNAME@$SSH_HOST "docker load -i /tmp/parken_app.tar && docker stop parken_app-dev || true && docker rm parken_app-dev || true && docker run -d --name parken_app-dev -p 3001:3001 parken_app:$DOCKER_IMAGE_TAG"
