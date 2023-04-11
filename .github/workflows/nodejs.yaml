@@ -24,6 +24,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
+    - uses: actions/checkout@v3
     - name: Build and Deploy to Production
       env:
         TERRAFORM_SSH_KEY: ${{ secrets.TERRAFORM_SSH_KEY }}
@@ -42,6 +43,7 @@ jobs:
     if: github.ref == 'refs/heads/dev'
 
     steps:
+    - uses: actions/checkout@v3
     - name: Build and Deploy to Development
       env:
         TERRAFORM_SSH_KEY: ${{ secrets.TERRAFORM_SSH_KEY }}
