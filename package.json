@@ -2,13 +2,13 @@
   "name": "parken_app",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.ejs",
   "scripts": {
     "start": "node server.js"
   },
   "repository": {
     "type": "git",
-    "url": "parken_app"
+    "url": "https://github.com/madchristian/parken_app.git"
   },
   "author": "",
   "license": "ISC",
