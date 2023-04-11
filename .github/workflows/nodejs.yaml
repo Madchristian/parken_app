@@ -26,7 +26,6 @@ jobs:
 
     steps:
     - name: Build and Deploy to Production
-      working-directory: parken_app
       env:
         TERRAFORM_SSH_KEY: ${{ secrets.TERRAFORM_SSH_KEY }}
         SSH_USERNAME: christian
@@ -45,7 +44,6 @@ jobs:
 
     steps:
     - name: Build and Deploy to Development
-      working-directory: parken_app
       env:
         TERRAFORM_SSH_KEY: ${{ secrets.TERRAFORM_SSH_KEY }}
         SSH_USERNAME: christian
