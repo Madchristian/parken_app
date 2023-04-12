@@ -41,8 +41,8 @@ jobs:
 
       - name: SSH Config
         run: |
-          echo "Host ssh.cstrube.de" > ~/.ssh/config
-          echo "  HostName ssh.cstrube.de" >> ~/.ssh/config
+          echo "Host ssh-dev.cstrube.de" > ~/.ssh/config
+          echo "  HostName ssh-dev.cstrube.de" >> ~/.ssh/config
           echo "  Port 22" >> ~/.ssh/config
           echo "  User christian" >> ~/.ssh/config
           echo "  IdentityFile $(pwd)/private_key" >> ~/.ssh/config
@@ -57,7 +57,7 @@ jobs:
       DOCKER_IMAGE_TAG: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
       CONTAINER_NAME: ${{ github.ref == 'refs/heads/main' && 'parken_app' || 'parken_app-dev' }}
       SSH_USERNAME: christian
-      SSH_HOST: ssh.cstrube.de
+      SSH_HOST: ssh-dev.cstrube.de
 
     steps:
       - uses: actions/checkout@v3
