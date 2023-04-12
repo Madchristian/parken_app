@@ -8,6 +8,8 @@ const MAX_RECONNECT_ATTEMPTS = 10;
 const markers = [];
 let markerGroup; // Definieren Sie markerGroup auf globaler Ebene
 
+let map;
+
 function initializeWebSocket() {
   if (socket && socket.readyState === WebSocket.OPEN) {
     console.log("WebSocket connection already established.");
@@ -34,7 +36,7 @@ async function deleteParkedCar(id, locationName, map) {
     if (!confirmDelete) {
       return;
     }
-    const response = await fetch(`http://quart:5000/apiv3/delete-vehicle?id=${id}&locationName=${locationName}`, {
+    const response = await fetch(`/apiv3/delete-vehicle?id=${id}&locationName=${locationName}`, {
       method: "DELETE",
       headers: {
         'Content-Type': 'application/json'
@@ -49,7 +51,10 @@ async function deleteParkedCar(id, locationName, map) {
     if (marker) {
       map.removeLayer(marker);
       markerGroup.removeLayer(marker);
-
+    } else {
+      console.error("Marker with ID", id, "not found.");
+    
+    
     }
   } catch (error) {
     console.error("Error deleting parked car:", error);
@@ -59,7 +64,7 @@ async function deleteParkedCar(id, locationName, map) {
 
 document.addEventListener("DOMContentLoaded", async function () {
   // Initialize the map
-  const map = L.map('map', {
+  map = L.map('map', {
     center: [0, 0],
     zoom: 15,
     maxZoom: 19
@@ -80,7 +85,7 @@ try {
   startSpinner();
 
   // Fetch all parked cars from the database
-  const response = await fetch("http://quart:5000/apiv3/search-vehicle");
+  const response = await fetch("/apiv3/search-vehicle");
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
@@ -140,7 +145,7 @@ try {
 
 function connectWebSocket() {
   try {
-    socket = new WebSocket(`wss://quart:5000/apiv3/vehicle-queue`);
+    socket = new WebSocket(`wss://${window.location.host}/apiv3/vehicle-queue`);
     console.log(socket)
     socket.onerror = function (event) {
       console.error("WebSocket error observed:", event);
@@ -156,7 +161,7 @@ function connectWebSocket() {
         if (receivedData.type === 'update') {
           const _id = receivedData._id;
           const locationName = receivedData.locationName;
-          const response = await fetch(`http://quart:5000/apiv3/parked-cars/${_id}/${locationName}`);
+          const response = await fetch(`/apiv3/parked-cars/${_id}/${locationName}`);
           const carData = await response.json();
 
           if (carData) {
@@ -225,15 +230,15 @@ function connectWebSocket() {
 
 document.getElementById('searchForm').addEventListener('submit', (event) => {
   event.preventDefault();
-  searchForLicensePlate();
+  searchForLicensePlate(map);
 });
 
-function searchForLicensePlate() {
+function searchForLicensePlate(map) {
   const licensePlate = document.getElementById('searchInput').value.toUpperCase();
   const marker = markerGroup.getLayers().find(marker => marker.options.licensePlate === licensePlate);
 
   if (marker) {
-    map.setView(marker.getLatLng(), 18);
+    map.setView(marker.getLatLng(), 19);
   } else {
     alert('Kennzeichen nicht gefunden');
   }

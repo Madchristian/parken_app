@@ -4,7 +4,7 @@ import { showMessage } from "./messages.js";
 const recentSavedData = new Map();
 
 async function saveData(licensePlate, latitude, longitude, vehiclestatus, locationName) {
-  const apiUrl = "http://quart:5000/apiv3/save-data";
+  const apiUrl = "https://parken.cstrube.de/apiv3/save-data";
   const data = {
     licensePlate: licensePlate,
     latitude: latitude,
@@ -73,10 +73,14 @@ async function getLocationName(latitude, longitude) {
   }
 }
 
-
 export async function getLocation(licensePlate, vehiclestatus) {
   if (navigator.geolocation) {
     startSpinner();
+    const options = {
+      enableHighAccuracy: true, // Aktiviert die hohe Genauigkeit
+      timeout: 10000, // Optional: Setzt ein Zeitlimit für die Geolokalisierung (in Millisekunden)
+      maximumAge: 1000 // Optional: Setzt die maximale Zeit (in Millisekunden), die ein zuvor gespeicherter Standort wiederverwendet werden kann
+    };
     navigator.geolocation.getCurrentPosition(async position => {
       const latitude = position.coords.latitude;
       const longitude = position.coords.longitude;
@@ -92,7 +96,11 @@ export async function getLocation(licensePlate, vehiclestatus) {
         console.error(error);
         stopSpinner();
       }
-    });
+    }, error => {
+      console.error("Geolocation error:", error);
+      stopSpinner();
+      alert("Error obtaining location. Please try again.");
+    }, options);
   } else {
     alert("Geolocation is not supported by this browser.");
   }
