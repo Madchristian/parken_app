@@ -4,7 +4,7 @@ import { showMessage } from "./messages.js";
 const recentSavedData = new Map();
 
 async function saveData(licensePlate, latitude, longitude, vehiclestatus, locationName) {
-  const apiUrl = "https://parken.cstrube.de/apiv3/save-data";
+  const apiUrl = "http://quart:5000/apiv3/save-data";
   const data = {
     licensePlate: licensePlate,
     latitude: latitude,

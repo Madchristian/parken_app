@@ -34,7 +34,7 @@ async function deleteParkedCar(id, locationName, map) {
     if (!confirmDelete) {
       return;
     }
-    const response = await fetch(`/apiv3/delete-vehicle?id=${id}&locationName=${locationName}`, {
+    const response = await fetch(`http://quart:5000/apiv3/delete-vehicle?id=${id}&locationName=${locationName}`, {
       method: "DELETE",
       headers: {
         'Content-Type': 'application/json'
@@ -80,7 +80,7 @@ try {
   startSpinner();
 
   // Fetch all parked cars from the database
-  const response = await fetch("/apiv3/search-vehicle");
+  const response = await fetch("http://quart:5000/apiv3/search-vehicle");
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
@@ -140,7 +140,7 @@ try {
 
 function connectWebSocket() {
   try {
-    socket = new WebSocket(`wss://${window.location.host}/apiv3/vehicle-queue`);
+    socket = new WebSocket(`wss://quart:5000/apiv3/vehicle-queue`);
     console.log(socket)
     socket.onerror = function (event) {
       console.error("WebSocket error observed:", event);
@@ -156,7 +156,7 @@ function connectWebSocket() {
         if (receivedData.type === 'update') {
           const _id = receivedData._id;
           const locationName = receivedData.locationName;
-          const response = await fetch(`/apiv3/parked-cars/${_id}/${locationName}`);
+          const response = await fetch(`http://quart:5000/apiv3/parked-cars/${_id}/${locationName}`);
           const carData = await response.json();
 
           if (carData) {

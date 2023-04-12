@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  parken_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    container_name: parken_app
+    restart: always
+    networks:
+      - backend
+      - frontend
+
+networks:
+  backend:
+    driver: bridge
+    external: true
+  frontend:
+    driver: bridge
+    external: true
