@@ -63,64 +63,31 @@
           <input class="form-control me-2" type="search" placeholder="Kennzeichen" aria-label="Search" id="searchInput">
           <button class="btn btn-outline-success" type="submit">Suche</button>
         </form>
-        
+
       </div>
     </div>
   </nav>
 </body>
-
-
-
-  <div class="container-fluid">
-    <div id="map" style="width: 100%; height: 100vh;"></div>
-    <div id="spinner-container" class="position-absolute bottom-0 start-50 translate-middle hidden" style="z-index: 2;">
-      <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
-        <span class="visually-hidden">Loading...</span>
-      </div>
+<div class="container-fluid">
+  <div id="map" style="width: 100%; height: 100vh;"></div>
+  <div id="spinner-container" class="position-absolute bottom-0 start-50 translate-middle hidden" style="z-index: 2;">
+    <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+      <span class="visually-hidden">Loading...</span>
     </div>
-    <script>
-async function fetchLocations() {
-  try {
-    const response = await fetch('/apiv3/get-collection-names');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const locations = await response.json();
-    populateLocationDropdown(locations);
-  } catch (error) {
-    console.error("Error fetching locations:", error);
-  }
-}
+  </div>
 
-function populateLocationDropdown(locations) {
-  const dropdownMenu = document.getElementById('locationDropdown');
+  <script type="module" src="/src/js/parkplatz.js"></script>
+  <script src="/src/js/locationsfilter.js"></script>
+  <!-- Einbindung von Bootstrap JS -->
 
-  locations.forEach(location => {
-    const listItem = document.createElement('li');
-    const link = document.createElement('a');
-    link.className = 'dropdown-item';
-    link.href = '#';
-    link.textContent = location.name;
-    link.addEventListener('click', () => {
-      showMarkersByCollection(location.collectionName);
+  <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      fetchLocations();
     });
-    listItem.appendChild(link);
-    dropdownMenu.appendChild(listItem);
-  });
-}
 
-document.addEventListener('DOMContentLoaded', () => {
-  fetchLocations();
-});
-
-</script>
-
-    </script>
-    <!-- Einbindung von Bootstrap JS -->
-    <script type="module" src="/src/js/parkplatz.js"></script>
-    <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="./node_modules/jquery/dist/jquery.min.js"></script>
-
-</body>
+  </script>
+  </body>
 
 </html>

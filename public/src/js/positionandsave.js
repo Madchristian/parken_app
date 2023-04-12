@@ -3,14 +3,20 @@ import { showMessage } from "./messages.js";
 
 const recentSavedData = new Map();
 
-async function saveData(licensePlate, latitude, longitude, vehiclestatus, locationName) {
+async function saveData(
+  licensePlate,
+  latitude,
+  longitude,
+  vehiclestatus,
+  locationName
+) {
   const apiUrl = "https://parken.cstrube.de/apiv3/save-data";
   const data = {
     licensePlate: licensePlate,
     latitude: latitude,
     longitude: longitude,
     vehiclestatus: vehiclestatus,
-    locationName: locationName
+    locationName: locationName,
   };
 
   const cacheKey = JSON.stringify(data);
@@ -26,9 +32,9 @@ async function saveData(licensePlate, latitude, longitude, vehiclestatus, locati
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
 
     if (response.ok) {
@@ -49,16 +55,17 @@ async function saveData(licensePlate, latitude, longitude, vehiclestatus, locati
       console.error("Error saving data:", response.status, response.statusText);
       const errorsound = new Audio("/sound/error.mp3");
       errorsound.play();
-      showMessage("Ein Fehler ist aufgetreten, bitte spöter erneut vesuchen", "error");
+      showMessage(
+        "Ein Fehler ist aufgetreten, bitte spöter erneut vesuchen",
+        "error"
+      );
       stopSpinner();
     }
-
   } catch (error) {
     console.error("Error sending data to server:", error);
     stopSpinner();
   }
 }
-
 
 async function getLocationName(latitude, longitude) {
   const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latitude}&lon=${longitude}`;
@@ -68,7 +75,11 @@ async function getLocationName(latitude, longitude) {
     const data = await response.json();
     return data.address.town || data.address.city || data.address.county;
   } else {
-    console.error("Error fetching location name:", response.status, response.statusText);
+    console.error(
+      "Error fetching location name:",
+      response.status,
+      response.statusText
+    );
     throw new Error("Error fetching location name");
   }
 }
@@ -80,30 +91,40 @@ export async function getLocation(licensePlate, vehiclestatus) {
     const options = {
       enableHighAccuracy: true, // Aktiviert die hohe Genauigkeit
       timeout: 10000, // Optional: Setzt ein Zeitlimit für die Geolokalisierung (in Millisekunden)
-      maximumAge: 1000 // Optional: Setzt die maximale Zeit (in Millisekunden), die ein zuvor gespeicherter Standort wiederverwendet werden kann
+      maximumAge: 1000, // Optional: Setzt die maximale Zeit (in Millisekunden), die ein zuvor gespeicherter Standort wiederverwendet werden kann
     };
-    navigator.geolocation.getCurrentPosition(async position => {
-      const latitude = position.coords.latitude;
-      const longitude = position.coords.longitude;
-      console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-      console.log(licensePlate);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+        console.log(licensePlate);
 
-      try {
-        const locationName = await getLocationName(latitude, longitude);
-        console.log("Location name:", locationName);
-        await saveData(licensePlate, latitude, longitude, vehiclestatus, locationName);
+        try {
+          const locationName = await getLocationName(latitude, longitude);
+          console.log("Location name:", locationName);
+          await saveData(
+            licensePlate,
+            latitude,
+            longitude,
+            vehiclestatus,
+            locationName
+          );
+          stopSpinner();
+          showMessage("Position erfolgreich ermittelt", "success"); // Zeigt eine Erfolgsmeldung an
+        } catch (error) {
+          console.error(error);
+          stopSpinner();
+          showMessage("Fehler bei der Positionsbestimmung", "error"); // Zeigt eine Fehlermeldung an
+        }
+      },
+      (error) => {
+        console.error("Geolocation error:", error);
         stopSpinner();
-        showMessage("Position erfolgreich ermittelt", "success"); // Zeigt eine Erfolgsmeldung an
-      } catch (error) {
-        console.error(error);
-        stopSpinner();
-        showMessage("Fehler bei der Positionsbestimmung", "error"); // Zeigt eine Fehlermeldung an
-      }
-    }, error => {
-      console.error("Geolocation error:", error);
-      stopSpinner();
-      alert("Error obtaining location. Please try again.");
-    }, options);
+        alert("Error obtaining location. Please try again.");
+      },
+      options
+    );
   } else {
     alert("Geolocation is not supported by this browser.");
   }
