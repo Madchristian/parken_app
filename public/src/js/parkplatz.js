@@ -5,7 +5,8 @@ let socket;
 let reconnectAttempts = 0;
 const MAX_RECONNECT_ATTEMPTS = 10;
 
-const markers = [];
+const markers = new Map();
+
 let markerGroup; // Definieren Sie markerGroup auf globaler Ebene
 
 let map;
@@ -47,14 +48,13 @@ async function deleteParkedCar(id, locationName, map) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     // Remove the marker from the map
-    const marker = markers.find(marker => marker._leaflet_id === id);
+    const marker = markers.get(id);
     if (marker) {
       map.removeLayer(marker);
       markerGroup.removeLayer(marker);
+      markers.delete(id);
     } else {
       console.error("Marker with ID", id, "not found.");
-    
-    
     }
   } catch (error) {
     console.error("Error deleting parked car:", error);
@@ -74,72 +74,76 @@ document.addEventListener("DOMContentLoaded", async function () {
   markerGroup = L.featureGroup().addTo(map);
 
 
-// Add a tile layer to the map
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-    '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-  maxZoom: 19
-}).addTo(map);
+  // Add a tile layer to the map
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+      '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+    maxZoom: 19
+  }).addTo(map);
 
-try {
-  startSpinner();
+  try {
+    startSpinner();
 
-  // Fetch all parked cars from the database
-  const response = await fetch("/apiv3/search-vehicle");
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-  const parkedCars = await response.json();
-
-  if (!Array.isArray(parkedCars.data)) {
-    throw new Error("Response is not an array of parked cars");
-  }
-
-
-  // Calculate the bounding box for the coordinates
-  const coordinates = parkedCars.data
-    .map(car => [car.latitude, car.longitude])
-    .filter(coord => coord[0] && coord[1]); // Filter out invalid coordinates
-
-  if (coordinates.length > 0) {
-    const markerBounds = L.latLngBounds(coordinates);
-
-    // Set the map view to include all parked cars
-    map.fitBounds(markerBounds);
-  } else {
-    // Set the map view to a default location and zoom level
-    map.setView([51.1657, 10.4515], 6); // Deutschland
-  }
-
-  // Loop through the parked cars and create markers for each one
-  parkedCars.data.forEach(car => {
-    if (car.latitude && car.longitude) { // Prüfen Sie, ob die Koordinaten gültig sind
-      const icon = createIcon(car.vehiclestatus, car.licensePlate, car.timestamp, car._id);
-      const marker = L.marker([car.latitude, car.longitude], { icon: icon, licensePlate: car.licensePlate });
-      markerGroup.addLayer(marker);
-
-      // Add an event listener to the delete button on the marker
-      const deleteButton = document.getElementById(`delete-${car._id}`);
-      if (deleteButton) {
-        deleteButton.addEventListener('click', (event) => {
-
-          event.stopPropagation(); // Prevent the click event from propagating to the marker itself
-          deleteParkedCar(car._id, car.locationName, map);
-        });
-      }
-      marker._leaflet_id = car._id;
+    // Fetch all parked cars from the database
+    const response = await fetch("/apiv3/search-vehicle");
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  })
+    const parkedCars = await response.json();
+
+    if (!Array.isArray(parkedCars.data)) {
+      throw new Error("Response is not an array of parked cars");
+    }
 
 
-  stopSpinner();
-  initializeWebSocket();
-} catch (error) {
-  console.error(error);
-  // Wenn ein Fehler auftritt, stelle trotzdem eine Verbindung zum WebSocket her
-  initializeWebSocket();
-  stopSpinner();
-}
+    // Calculate the bounding box for the coordinates
+    const coordinates = parkedCars.data
+      .map(car => [car.latitude, car.longitude])
+      .filter(coord => coord[0] && coord[1]); // Filter out invalid coordinates
+
+    if (coordinates.length > 0) {
+      const markerBounds = L.latLngBounds(coordinates);
+
+      // Set the map view to include all parked cars
+      map.fitBounds(markerBounds);
+    } else {
+      // Set the map view to a default location and zoom level
+      map.setView([51.1657, 10.4515], 6); // Deutschland
+    }
+
+    // Loop through the parked cars and create markers for each one
+    parkedCars.data.forEach(car => {
+      if (car.latitude && car.longitude) { // Prüfen Sie, ob die Koordinaten gültig sind
+        const icon = createIcon(car.vehiclestatus, car.licensePlate, car.timestamp, car._id);
+        const marker = L.marker([car.latitude, car.longitude], {
+          icon: icon,
+          licensePlate: car.licensePlate,
+          collectionName: car.collectionName
+        });
+        markerGroup.addLayer(marker);
+
+        // Add an event listener to the delete button on the marker
+        const deleteButton = document.getElementById(`delete-${car._id}`);
+        if (deleteButton) {
+          deleteButton.addEventListener('click', (event) => {
+
+            event.stopPropagation(); // Prevent the click event from propagating to the marker itself
+            deleteParkedCar(car._id, car.locationName, map);
+          });
+        }
+        marker._leaflet_id = car._id;
+      }
+    })
+
+
+    stopSpinner();
+    initializeWebSocket();
+  } catch (error) {
+    console.error(error);
+    // Wenn ein Fehler auftritt, stelle trotzdem eine Verbindung zum WebSocket her
+    initializeWebSocket();
+    stopSpinner();
+  }
 });
 
 
@@ -175,7 +179,12 @@ function connectWebSocket() {
             } else {
               const icon = createIcon(car.vehiclestatus, car.licensePlate, car.timestamp, car._id);
 
-              const marker = L.marker([car.latitude, car.longitude], { icon: icon, licensePlate: car.licensePlate });
+              // When adding a new marker after receiving a WebSocket update event, include the collectionName in the options
+              const marker = L.marker([car.latitude, car.longitude], {
+                icon: icon,
+                licensePlate: car.licensePlate,
+                collectionName: car.collectionName
+              });
               markerGroup.addLayer(marker);
               markers.push(marker);
 
@@ -190,17 +199,11 @@ function connectWebSocket() {
               }
             }
           }
-        } else if (receivedData.type === 'delete') {
-          const carId = receivedData.id;
-          console.log("Removing marker with ID", carId);
-          // Remove the marker for the deleted vehicle from the map
-          const marker = markerGroup.getLayer(carId);
-          if (marker) {
-            console.log("Removing marker", marker);
-            markerGroup.removeLayer(marker);
-            console.log("Removed marker", marker);
-          } else {
-            console.log("No marker found with ID", carId);
+          // In the socket.onmessage function, remove the marker after the receivedData.type check
+          if (receivedData.type === 'delete') {
+            const carId = receivedData.id;
+            console.log("Removing marker with ID", carId);
+            removeMarker(carId);
           }
         }
       } catch (error) {
@@ -244,3 +247,24 @@ function searchForLicensePlate(map) {
   }
 }
 
+// Add the showMarkersByCollection function
+function showMarkersByCollection(collectionName) {
+  markerGroup.eachLayer(marker => {
+    if (marker.options.collectionName === collectionName) {
+      marker.addTo(map);
+    } else {
+      marker.removeFrom(map);
+    }
+  });
+}
+
+function removeMarker(markerId) {
+  if (markers.has(markerId)) {
+    const marker = markers.get(markerId);
+    marker.removeFrom(map);
+    markers.delete(markerId);
+    console.log(`Removed marker with ID ${markerId}`);
+  } else {
+    console.warn(`No marker found with ID ${markerId}`);
+  }
+}
