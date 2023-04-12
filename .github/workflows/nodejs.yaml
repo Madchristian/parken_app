@@ -42,15 +42,15 @@ jobs:
       - name: SSH Config
         run: |
           mkdir -p ~/.ssh
-          echo "Host ssh2.cstrube.de" > ~/.ssh/config
-          echo "  HostName ssh2.cstrube.de" >> ~/.ssh/config
+          echo "Host ssh-dev.cstrube.de" > ~/.ssh/config
+          echo "  HostName ssh-dev.cstrube.de" >> ~/.ssh/config
           echo "  Port 22" >> ~/.ssh/config
           echo "  User christian" >> ~/.ssh/config
           echo "  IdentityFile $(pwd)/private_key" >> ~/.ssh/config
           echo "  ProxyCommand /usr/local/bin/cloudflared access ssh --hostname %h --client-id $CF_ACCESS_CLIENT_ID --client-secret $CF_ACCESS_CLIENT_SECRET" >> ~/.ssh/config
           echo "  StrictHostKeyChecking no" >> ~/.ssh/config
           echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
-      
+
 
   deploy:
     runs-on: ubuntu-latest
