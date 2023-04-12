@@ -76,6 +76,7 @@ async function getLocationName(latitude, longitude) {
 export async function getLocation(licensePlate, vehiclestatus) {
   if (navigator.geolocation) {
     startSpinner();
+    showMessage("Ermittle GPS-Position...", "info"); // Zeigt die Nachricht unter dem Spinner an
     const options = {
       enableHighAccuracy: true, // Aktiviert die hohe Genauigkeit
       timeout: 10000, // Optional: Setzt ein Zeitlimit für die Geolokalisierung (in Millisekunden)
@@ -92,9 +93,11 @@ export async function getLocation(licensePlate, vehiclestatus) {
         console.log("Location name:", locationName);
         await saveData(licensePlate, latitude, longitude, vehiclestatus, locationName);
         stopSpinner();
+        showMessage("Position erfolgreich ermittelt", "success"); // Zeigt eine Erfolgsmeldung an
       } catch (error) {
         console.error(error);
         stopSpinner();
+        showMessage("Fehler bei der Positionsbestimmung", "error"); // Zeigt eine Fehlermeldung an
       }
     }, error => {
       console.error("Geolocation error:", error);
