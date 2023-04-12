@@ -52,15 +52,16 @@ async function deleteParkedCar(id, locationName, map) {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    // Remove the marker from the map
-    const marker = markers.get(id);
-    if (marker) {
-      map.removeLayer(marker);
-      markerGroup.removeLayer(marker);
-      markers.delete(id);
-    } else {
-      console.error("Marker with ID", id, "not found.");
-    }
+  // Remove the marker from the map
+  const marker = markers.get(id); // Verwenden Sie die get-Methode, um den Marker aus der Map zu erhalten
+  if (marker) {
+    map.removeLayer(marker);
+    markerGroup.removeLayer(marker);
+    markers.delete(id); // Verwenden Sie die delete-Methode, um den Marker aus der Map zu entfernen
+  } else {
+    console.error("Marker with ID", id, "not found.");
+  }
+  
   } catch (error) {
     console.error("Error deleting parked car:", error);
     alert("Error deleting parked car");
@@ -212,11 +213,19 @@ function connectWebSocket() {
               }
             }
           }
-          // In the socket.onmessage function, remove the marker after the receivedData.type check
-          if (receivedData.type === "delete") {
+          if (receivedData.type === 'delete') {
             const carId = receivedData.id;
             console.log("Removing marker with ID", carId);
-            removeMarker(carId);
+            // Remove the marker for the deleted vehicle from the map
+            const marker = markerGroup.getLayer(carId);
+            if (marker) {
+              console.log("Removing marker", marker);
+              markerGroup.removeLayer(marker);
+              markers.delete(carId); // Verwenden Sie die delete-Methode, um den Marker aus der Map zu entfernen
+              console.log("Removed marker", marker);
+            } else {
+              console.log("No marker found with ID", carId);
+            }
           }
         }
       } catch (error) {

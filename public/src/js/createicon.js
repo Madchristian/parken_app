@@ -63,7 +63,7 @@ export function createIcon(vehiclestatus, licensePlate, timestamp, id) {
       }
       .btn-delete {
         position: absolute;
-        right: -22px;
+        right: -20px;
         top: 50%;
         transform: translateY(-50%);
         width: 20px;
@@ -80,7 +80,7 @@ export function createIcon(vehiclestatus, licensePlate, timestamp, id) {
         display: inline-block;
         vertical-align: middle;
         text-align: center;
-        font-size: 8px;
+        font-size: 6px;
         line-height: 1;
       }
       .hours,
@@ -88,7 +88,7 @@ export function createIcon(vehiclestatus, licensePlate, timestamp, id) {
       .minutes {
         display: block;
         margin: -4px;
-        padding: 2px;
+        padding: 1px;
       }
       .license-plate-icon {
         display: flex;
