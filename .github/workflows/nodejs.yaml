@@ -57,7 +57,7 @@ jobs:
       DOCKER_IMAGE_TAG: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
       CONTAINER_NAME: ${{ github.ref == 'refs/heads/main' && 'parken_app' || 'parken_app-dev' }}
       SSH_USERNAME: christian
-      SSH_HOST: ssh2.cstrube.de
+      SSH_HOST: ssh.cstrube.de
 
     steps:
       - uses: actions/checkout@v3
