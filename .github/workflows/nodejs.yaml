@@ -41,6 +41,18 @@ jobs:
           echo "  StrictHostKeyChecking no" >> ~/.ssh/config
           echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
 
+      - name: Log Information
+        run: |
+          echo "Debugging SSH Connection:"
+          echo "SSH_HOST: $SSH_HOST"
+          echo "SSH_USERNAME: $SSH_USERNAME"
+          echo "Checking for cloudflared binary:"
+          which cloudflared
+          echo "Cloudflared version:"
+          cloudflared --version
+          echo "SSH Config:"
+          cat ~/.ssh/config
+
   deploy:
     runs-on: ubuntu-latest
     needs: build-and-test
