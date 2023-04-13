@@ -1,6 +1,5 @@
 // trainings.js
 
-import { model } from "./model.js";
 import { saveModelData } from "./api.js";
 import { loadModelData } from "./api.js";
 

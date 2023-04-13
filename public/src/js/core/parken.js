@@ -1,11 +1,10 @@
 // parken.js
 
 // Importieren der benötigten Funktionen und Variablen aus anderen Modulen
-import { scanQRCodeHandler } from '../../deep_learning/qr_code/scanqrcodehandler.js';
-import { scanLicensePlate } from '../../deep_learning/licence_plate/licensePlateScanner.js';
-import { stopSpinner } from '../progress/progress.js';
-import { trainAndSaveModels } from '../../deep_learning/model/trainings.js';
-import { initializeModels } from '../../deep_learning/model/trainigs.js';
+import { scanQRCodeHandler } from '../deep_learning/qr_code/scanqrcodehandler.js';
+import { scanLicensePlate } from '../deep_learning/licence_plate/licensePlateScanner.js';
+import { stopSpinner } from '../features/progress/progress.js';
+import { trainAndSaveModels, initializeModels } from '../deep_learning/model/trainings.js';
 
 // Exportieren der benötigten Funktionen und Variablen für andere Module
 export {
@@ -14,9 +13,6 @@ export {
 
 document.addEventListener('DOMContentLoaded', async () => {
   stopSpinner();
-
-  // Initialisieren Sie die Modelle mit den geladenen Daten
-  const { licensePlateModel, vehicleTypeModel, colorModel } = await initializeModels();
 
   // Funktion zur Initialisierung der Event-Listener
   function init() {

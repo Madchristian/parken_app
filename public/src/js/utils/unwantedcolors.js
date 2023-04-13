@@ -1,4 +1,4 @@
-import { scanLicensePlate } from "./licensePlateScanner.js";
+import { scanLicensePlate } from "../deep_learning/licence_plate/licensePlateScanner.js";
 
 function isUnwantedColor(color, unwantedColors) {
   return unwantedColors.some((unwantedColor) => {

@@ -1,6 +1,6 @@
-import { createIcon } from "../../createicon.js";
-import { startSpinner, stopSpinner } from "../progress/progress.js";
-import "../../map.js";
+import { createIcon } from "../features/map/createicon.js";
+import { startSpinner, stopSpinner } from "../features/progress/progress.js";
+import "../features/map/map.js";
 
 let socket;
 let reconnectAttempts = 0;

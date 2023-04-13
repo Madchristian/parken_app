@@ -91,7 +91,7 @@ export async function getLocation(licensePlate, vehiclestatus) {
     const options = {
       enableHighAccuracy: true, // Aktiviert die hohe Genauigkeit
       timeout: 10000, // Optional: Setzt ein Zeitlimit für die Geolokalisierung (in Millisekunden)
-      maximumAge: 1000, // Optional: Setzt die maximale Zeit (in Millisekunden), die ein zuvor gespeicherter Standort wiederverwendet werden kann
+      maximumAge: 2000, // Optional: Setzt die maximale Zeit (in Millisekunden), die ein zuvor gespeicherter Standort wiederverwendet werden kann
     };
     navigator.geolocation.getCurrentPosition(
       async (position) => {
