@@ -1,5 +1,6 @@
-import { createIcon } from "./createicon.js";
-import { startSpinner, stopSpinner } from "./progress.js";
+import { createIcon } from "../../createicon.js";
+import { startSpinner, stopSpinner } from "../progress/progress.js";
+import "../../map.js";
 
 let socket;
 let reconnectAttempts = 0;
@@ -10,6 +11,21 @@ const markers = new Map();
 let markerGroup; // Definieren Sie markerGroup auf globaler Ebene
 
 let map;
+
+const openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+    '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+  maxZoom: 19
+});
+
+const esriWorldImagery = L.tileLayer(
+  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+  {
+    attribution:
+      "&copy; <a href='https://www.esri.com/'>Esri</a> | Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
+    maxZoom: 19
+  }
+);
 
 function initializeWebSocket() {
   if (socket && socket.readyState === WebSocket.OPEN) {
@@ -52,16 +68,15 @@ async function deleteParkedCar(id, locationName, map) {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-  // Remove the marker from the map
-  const marker = markers.get(id); // Verwenden Sie die get-Methode, um den Marker aus der Map zu erhalten
-  if (marker) {
-    map.removeLayer(marker);
-    markerGroup.removeLayer(marker);
-    markers.delete(id); // Verwenden Sie die delete-Methode, um den Marker aus der Map zu entfernen
-  } else {
-    console.error("Marker with ID", id, "not found.");
-  }
-  
+    // Remove the marker from the map
+    const marker = markers.get(id); // Verwenden Sie die get-Methode, um den Marker aus der Map zu erhalten
+    if (marker) {
+      map.removeLayer(marker);
+      markerGroup.removeLayer(marker);
+      markers.delete(id); // Verwenden Sie die delete-Methode, um den Marker aus der Map zu entfernen
+    } else {
+      console.error("Marker with ID", id, "not found.");
+    }
   } catch (error) {
     console.error("Error deleting parked car:", error);
     alert("Error deleting parked car");
@@ -76,16 +91,16 @@ document.addEventListener("DOMContentLoaded", async function () {
     maxZoom: 19,
   });
 
+  esriWorldImagery.addTo(map);
+  openStreetMap.addTo(map);
+  const baseMaps = {
+    OpenStreetMap: openStreetMap,
+    Satellite: esriWorldImagery,
+  };
+  L.control.layers(baseMaps).addTo(map);
+
   // Create a feature group to group the markers
   markerGroup = L.featureGroup().addTo(map);
-
-  // Add a tile layer to the map
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution:
-      'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-      '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-    maxZoom: 19,
-  }).addTo(map);
 
   try {
     startSpinner();
@@ -129,9 +144,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         const marker = L.marker([car.latitude, car.longitude], {
           icon: icon,
           licensePlate: car.licensePlate,
-          collectionName: car.collectionName,
         });
         markerGroup.addLayer(marker);
+        // Fügen Sie den Marker zur "markers" Map hinzu
+        markers.set(car._id, marker);
 
         // Add an event listener to the delete button on the marker
         const deleteButton = document.getElementById(`delete-${car._id}`);
@@ -213,7 +229,7 @@ function connectWebSocket() {
               }
             }
           }
-          if (receivedData.type === 'delete') {
+        } else if (receivedData.type === "delete") {
             const carId = receivedData.id;
             console.log("Removing marker with ID", carId);
             // Remove the marker for the deleted vehicle from the map
@@ -227,7 +243,7 @@ function connectWebSocket() {
               console.log("No marker found with ID", carId);
             }
           }
-        }
+        
       } catch (error) {
         console.error("Error processing WebSocket message:", error);
       }

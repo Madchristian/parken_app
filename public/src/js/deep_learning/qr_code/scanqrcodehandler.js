@@ -1,6 +1,6 @@
 import { scanQRCodeAndroid } from './scanqrcodeandroid.js';
 import { scanQRCodeiOS } from './scanqrcodeios.js';
-import { getLocation } from './positionandsave.js';
+import { getLocation } from '../../features/location/positionandsave.js';
 
 export async function scanQRCodeHandler(vehiclestatus) {
   const isMobile = window.innerWidth < 2734;

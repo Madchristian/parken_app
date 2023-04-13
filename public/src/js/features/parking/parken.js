@@ -1,36 +1,63 @@
 // parken.js
 
 // Importieren der benötigten Funktionen und Variablen aus anderen Modulen
-import { scanQRCodeHandler } from './scanqrcodehandler.js';
-import { scanLicensePlate } from './licensePlateScanner.js';
-import { stopSpinner } from './progress.js';
+import { scanQRCodeHandler } from '../../deep_learning/qr_code/scanqrcodehandler.js';
+import { scanLicensePlate } from '../../deep_learning/licence_plate/licensePlateScanner.js';
+import { stopSpinner } from '../progress/progress.js';
+import { trainAndSaveModels } from '../../deep_learning/model/trainings.js';
+import { initializeModels } from '../../deep_learning/model/trainigs.js';
 
 // Exportieren der benötigten Funktionen und Variablen für andere Module
 export {
   scanQRCodeHandler
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   stopSpinner();
+
+  // Initialisieren Sie die Modelle mit den geladenen Daten
+  const { licensePlateModel, vehicleTypeModel, colorModel } = await initializeModels();
 
   // Funktion zur Initialisierung der Event-Listener
   function init() {
-
     // Event-Listener für den "Kennzeichen scannen"-Button hinzufügen
-    document.getElementById('scanLicensePlateButton').addEventListener('click', async () => {
+    document.getElementById("train_model_button").addEventListener("click", async () => {
       // Input-Element für die Kennzeichen-Datei auswählen
-      const licensePlateFileInput = document.getElementById('licensePlateInput');
+      const licensePlateFileInput = document.getElementById("licensePlateInput");
       // Event-Listener für das Ändern des Input-Elements hinzufügen
-      licensePlateFileInput.addEventListener('change', async () => {
+      licensePlateFileInput.addEventListener("change", async () => {
         try {
-          await scanLicensePlate(licensePlateFileInput);
+          const imageData = await scanLicensePlate(licensePlateFileInput);
+
+          // Erfassen Sie die Benutzereingabe für das Kennzeichen, den Fahrzeugtyp und die Farbe
+          const licensePlateInput = document.getElementById("licensePlateInput").value;
+          const vehicleTypeInput = document.getElementById("vehicleTypeInput").value;
+          const colorInput = document.getElementById("colorInput").value;
+          const labels = [licensePlateInput, vehicleTypeInput, colorInput];
+
+          // Erstellen Sie ein Trainingsdatenobjekt mit dem erfassten Bild und den vom Benutzer eingegebenen Informationen
+          const trainingData = [{
+            image: imageData,
+            label: {
+              licensePlate: licensePlateInput,
+              vehicleType: vehicleTypeInput,
+              color: colorInput,
+            },
+          }];
+
+          // Trainieren Sie die Modelle mit dem Trainingsdatenobjekt und speichern Sie die trainierten Daten in der Datenbank
+          await trainAndSaveModels(trainingData);
+
         } catch (error) {
           console.error(error);
         }
       });
+
       // Klicken des Input-Elements simulieren
       licensePlateFileInput.click();
     });
+
+    
 
     // Event-Listener für den "QR Code scannen"-Button hinzufügen
     document.getElementById('scanQRCodeButtonCheck').addEventListener('click', async () => {

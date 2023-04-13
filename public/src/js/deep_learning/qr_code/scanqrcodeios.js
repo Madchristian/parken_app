@@ -1,4 +1,4 @@
-import { getLocation } from "./positionandsave.js";
+import { getLocation } from "../../features/location/positionandsave.js";
 
 let cameraPermission = undefined;
 let stream = null;

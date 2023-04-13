@@ -1,5 +1,5 @@
-import { startSpinner, stopSpinner } from "./progress.js";
-import { showMessage } from "./messages.js";
+import { startSpinner, stopSpinner } from "../progress/progress.js";
+import { showMessage } from "../../core/messages.js";
 
 const recentSavedData = new Map();
 
