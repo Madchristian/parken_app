@@ -21,9 +21,12 @@ jobs:
 
       - name: Setup Cloudflared
         run: |
-          wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
-          sudo mv cloudflared /usr/local/bin/
+          wget -q https://github.com/cloudflare/cloudflared/archive/refs/tags/2023.4.0.tar.gz
+          tar -xzf 2023.4.0.tar.gz
+          sudo mv cloudflared-2023.4.0/cloudflared /usr/local/bin/
+          sudo chmod +x /usr/local/bin/cloudflared
           cloudflared --version
+
 
       - name: Setup SSH Config
         env:
