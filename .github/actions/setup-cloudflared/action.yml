@@ -1,4 +1,3 @@
-# .github/actions/setup-cloudflared/action.yml
 name: 'Setup Cloudflared'
 description: 'Download and install the Cloudflared binary'
 inputs:
@@ -8,17 +7,23 @@ inputs:
     default: 'latest'
 
 runs:
-  using: composite
+  using: 'composite'
   steps:
     - name: Download cloudflared for Linux
       shell: bash
-      working-directory: ${{ runner.temp }}
-      run: aria2c -x 16 "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64"
+      working-directory: ${{ github.workspace }}
+      run: |
+        if [ "${{ inputs.version }}" == "latest" ]; then
+          aria2c -x 16 "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64"
+        else
+          aria2c -x 16 "https://github.com/cloudflare/cloudflared/releases/download/${{ inputs.version }}/cloudflared-linux-amd64"
+        fi
 
     - name: Install cloudflared
       shell: bash
-      working-directory: ${{ runner.temp }}
+      working-directory: ${{ github.workspace }}
       run: |
+        mkdir -p .cloudflared-bin
         chmod +x cloudflared-linux-amd64
-        mv cloudflared-linux-amd64 /usr/local/bin/cloudflared
-        cloudflared --version
+        mv cloudflared-linux-amd64 .cloudflared-bin/cloudflared
+        echo "${{ github.workspace }}/.cloudflared-bin" >> $GITHUB_PATH
