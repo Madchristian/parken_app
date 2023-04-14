@@ -18,7 +18,7 @@
 </head>
 
 <body class="bg-dark">
-  <nav class="navbar navbar-expand-md bg-body-tertiary" style="background-color: #18181c;">
+  <nav class="navbar navbar-expand-md bg-body-tertiary" style="background-color: #18181c;" data-bs-autohide="false">
     <div class="container-fluid">
       <a class="navbar-brand brand-link" href="#">PA</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -77,15 +77,13 @@
   </div>
 
   <script type="module" src="/src/js/core/parkplatz.js"></script>
-  <script src="/src/js/features/location/locationsfilter.js"></script>
+  <script type="module" src="/src/js/features/location/locationsfilter.js"></script>
   <!-- Einbindung von Bootstrap JS -->
 
   <script src="./node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
   <script src="./node_modules/jquery/dist/jquery.min.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      fetchLocations();
-    });
+
 
   </script>
   </body>

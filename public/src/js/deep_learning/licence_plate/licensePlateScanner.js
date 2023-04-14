@@ -28,6 +28,7 @@ export async function captureImageWithCamera() {
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0);
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        document.body.removeChild(input);
         resolve(imageData);
       };
 
@@ -38,8 +39,7 @@ export async function captureImageWithCamera() {
 
     document.body.appendChild(input);
     input.click();
-    document.body.removeChild(input);
-  });
+  }); 
 }
 
 export async function scanLicensePlate() {

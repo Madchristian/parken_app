@@ -1,87 +1,24 @@
 import { createIcon } from "../features/map/createicon.js";
 import { startSpinner, stopSpinner } from "../features/progress/progress.js";
-import "../features/map/map.js";
-
-let socket;
-let reconnectAttempts = 0;
-const MAX_RECONNECT_ATTEMPTS = 10;
+import { initializeWebSocket,
+  connectWebSocket, deleteParkedCar
+} from "../connections/websockets.js";
 
 const markers = new Map();
 
-let markerGroup; // Definieren Sie markerGroup auf globaler Ebene
+export let markerGroup; // Definieren Sie markerGroup auf globaler Ebene
 
 let map;
 
-const openStreetMap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
-    '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-  maxZoom: 19
-});
-
-const esriWorldImagery = L.tileLayer(
-  "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+const openStreetMap = L.tileLayer(
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
   {
     attribution:
-      "&copy; <a href='https://www.esri.com/'>Esri</a> | Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
-    maxZoom: 19
+      'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+      '<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+    maxZoom: 19,
   }
 );
-
-function initializeWebSocket() {
-  if (socket && socket.readyState === WebSocket.OPEN) {
-    console.log("WebSocket connection already established.");
-    return;
-  }
-
-  connectWebSocket();
-  socket.addEventListener("close", () => {
-    if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
-      reconnectAttempts++;
-      console.log(`Trying to reconnect (attempt ${reconnectAttempts})...`);
-      setTimeout(() => {
-        initializeWebSocket();
-      }, 10000);
-    } else {
-      console.error(
-        `WebSocket connection failed after ${MAX_RECONNECT_ATTEMPTS} attempts.`
-      );
-    }
-  });
-}
-
-async function deleteParkedCar(id, locationName, map) {
-  try {
-    const confirmDelete = confirm("Fahrzeug abgeholt?");
-    if (!confirmDelete) {
-      return;
-    }
-    const response = await fetch(
-      `/apiv3/delete-vehicle?id=${id}&locationName=${locationName}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    // Remove the marker from the map
-    const marker = markers.get(id); // Verwenden Sie die get-Methode, um den Marker aus der Map zu erhalten
-    if (marker) {
-      map.removeLayer(marker);
-      markerGroup.removeLayer(marker);
-      markers.delete(id); // Verwenden Sie die delete-Methode, um den Marker aus der Map zu entfernen
-    } else {
-      console.error("Marker with ID", id, "not found.");
-    }
-  } catch (error) {
-    console.error("Error deleting parked car:", error);
-    alert("Error deleting parked car");
-  }
-}
 
 document.addEventListener("DOMContentLoaded", async function () {
   // Initialize the map
@@ -91,11 +28,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     maxZoom: 19,
   });
 
-  esriWorldImagery.addTo(map);
   openStreetMap.addTo(map);
   const baseMaps = {
     OpenStreetMap: openStreetMap,
-    Satellite: esriWorldImagery,
   };
   L.control.layers(baseMaps).addTo(map);
 
@@ -171,109 +106,6 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 });
 
-function connectWebSocket() {
-  try {
-    socket = new WebSocket(`wss://${window.location.host}/apiv3/vehicle-queue`);
-    console.log(socket);
-    socket.onerror = function (event) {
-      console.error("WebSocket error observed:", event);
-      alert("WebSocket connection error");
-    };
-
-    socket.onmessage = async function (event) {
-      try {
-        console.log("Raw data received from WebSocket:", event.data);
-        const receivedData = JSON.parse(event.data);
-        //console.log("Received timestamp:", receivedData.timestamp);
-
-        if (receivedData.type === "update") {
-          const _id = receivedData._id;
-          const locationName = receivedData.locationName;
-          const response = await fetch(
-            `/apiv3/parked-cars/${_id}/${locationName}`
-          );
-          const carData = await response.json();
-
-          if (carData) {
-            const car = carData;
-
-            // Update the marker for the car or add a new marker if it doesn't exist yet
-            const existingMarker = markerGroup.getLayer(car._id);
-
-            if (existingMarker) {
-              existingMarker.setLatLng([car.latitude, car.longitude]);
-            } else {
-              const icon = createIcon(
-                car.vehiclestatus,
-                car.licensePlate,
-                car.timestamp,
-                car._id
-              );
-
-              // When adding a new marker after receiving a WebSocket update event, include the collectionName in the options
-              const marker = L.marker([car.latitude, car.longitude], {
-                icon: icon,
-                licensePlate: car.licensePlate,
-                collectionName: car.collectionName,
-              });
-              markerGroup.addLayer(marker);
-              markers.push(marker);
-
-              // Add an event listener to the delete button on the marker
-              const deleteButton = document.getElementById(`delete-${car._id}`);
-              if (deleteButton) {
-                deleteButton.addEventListener("click", (event) => {
-                  event.stopPropagation(); // Prevent the click event from propagating to the marker itself
-                  deleteParkedCar(car._id, map);
-                });
-              }
-            }
-          }
-        } else if (receivedData.type === "delete") {
-            const carId = receivedData.id;
-            console.log("Removing marker with ID", carId);
-            // Remove the marker for the deleted vehicle from the map
-            const marker = markerGroup.getLayer(carId);
-            if (marker) {
-              console.log("Removing marker", marker);
-              markerGroup.removeLayer(marker);
-              markers.delete(carId); // Verwenden Sie die delete-Methode, um den Marker aus der Map zu entfernen
-              console.log("Removed marker", marker);
-            } else {
-              console.log("No marker found with ID", carId);
-            }
-          }
-        
-      } catch (error) {
-        console.error("Error processing WebSocket message:", error);
-      }
-    };
-
-    socket.onclose = function (event) {
-      console.error("WebSocket connection closed:", event);
-      if (
-        socket.readyState !== WebSocket.OPEN &&
-        reconnectAttempts < MAX_RECONNECT_ATTEMPTS
-      ) {
-        setTimeout(() => {
-          reconnectAttempts++;
-          console.log(`Trying to reconnect (attempt ${reconnectAttempts})...`);
-          connectWebSocket();
-        }, 10000);
-      } else if (socket.readyState === WebSocket.OPEN) {
-        console.log("WebSocket connection is still open.");
-      } else {
-        console.error(
-          `WebSocket connection failed after ${MAX_RECONNECT_ATTEMPTS} attempts.`
-        );
-      }
-    };
-  } catch (error) {
-    console.error("WebSocket connection error:", error);
-    alert("WebSocket connection error");
-  }
-}
-
 document.getElementById("searchForm").addEventListener("submit", (event) => {
   event.preventDefault();
   searchForLicensePlate(map);
@@ -294,17 +126,6 @@ function searchForLicensePlate(map) {
   }
 }
 
-// Add the showMarkersByCollection function
-function showMarkersByCollection(collectionName) {
-  markerGroup.eachLayer((marker) => {
-    if (marker.options.collectionName === collectionName) {
-      marker.addTo(map);
-    } else {
-      marker.removeFrom(map);
-    }
-  });
-}
-
 function removeMarker(markerId) {
   if (markers.has(markerId)) {
     const marker = markers.get(markerId);
@@ -315,3 +136,9 @@ function removeMarker(markerId) {
     console.warn(`No marker found with ID ${markerId}`);
   }
 }
+
+markerGroup.eachLayer(function (marker) {
+  marker.on("click", function () {
+    event.target.bringToFront();
+  });
+});
