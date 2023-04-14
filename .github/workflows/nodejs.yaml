@@ -23,8 +23,10 @@ jobs:
         run: |
           aria2c -x 16 "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64"
           chmod +x cloudflared-linux-amd64
-          mv cloudflared-linux-amd64 /usr/local/bin/cloudflared
+          sudo mv cloudflared-linux-amd64 /usr/local/bin/cloudflared
+          echo "CLOUDFLARED_PATH=/usr/local/bin" >> $GITHUB_ENV
           cloudflared --version
+
 
       - name: Setup SSH Config
         env:
@@ -33,7 +35,7 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "  Host ssh-dev-01.cstrube.de" > ~/.ssh/config
-          echo "  ProxyCommand cloudflared access ssh --hostname %h --id $CF_ACCESS_CLIENT_ID --secret $CF_ACCESS_CLIENT_SECRET" >> ~/.ssh/config
+          echo "  ProxyCommand $CLOUDFLARED_PATH/cloudflared access ssh --hostname %h --id $CF_ACCESS_CLIENT_ID --secret $CF_ACCESS_CLIENT_SECRET" >> ~/.ssh/config
           echo "  StrictHostKeyChecking no" >> ~/.ssh/config
           echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
 
@@ -55,7 +57,7 @@ jobs:
           echo "SSH_HOST: $SSH_HOST"
           echo "SSH_USERNAME: $SSH_USERNAME"
           echo "Cloudflared version:"
-          /usr/local/bin/cloudflared --version
+          $CLOUDFLARED_PATH/cloudflared --version
           echo "SSH Config:"
           cat ~/.ssh/config
 
