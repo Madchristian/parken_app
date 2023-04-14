@@ -46,9 +46,11 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "  Host ssh-dev-01.cstrube.de" > ~/.ssh/config
-          echo "  ProxyCommand $CLOUDFLARED_PATH/cloudflared access ssh --hostname %h --id $CF_ACCESS_CLIENT_ID --secret $CF_ACCESS_CLIENT_SECRET" >> ~/.ssh/config
+          echo "  HostName ssh-dev-01.cstrube.de" >> ~/.ssh/config
+          echo "  ProxyCommand $CLOUDFLARED_PATH/cloudflared access ssh --hostname %h --id $CF_ACCESS_CLIENT_ID --secret $CF_ACCESS_CLIENT_SECRET --verbose" >> ~/.ssh/config
           echo "  StrictHostKeyChecking no" >> ~/.ssh/config
           echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
+
 
       - name: Log Information
         run: |
