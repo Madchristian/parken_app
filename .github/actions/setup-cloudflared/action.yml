@@ -21,3 +21,4 @@ runs:
       run: |
         chmod +x cloudflared-linux-amd64
         mv cloudflared-linux-amd64 /usr/local/bin/cloudflared
+        cloudflared --version
