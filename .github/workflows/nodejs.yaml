@@ -55,7 +55,7 @@ jobs:
           echo "SSH_HOST: $SSH_HOST"
           echo "SSH_USERNAME: $SSH_USERNAME"
           echo "Cloudflared version:"
-          cloudflared --version
+          /usr/local/bin/cloudflared --version
           echo "SSH Config:"
           cat ~/.ssh/config
 
