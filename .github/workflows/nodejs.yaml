@@ -32,26 +32,12 @@ jobs:
           CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
         run: |
           mkdir -p ~/.ssh
-          echo "Host ssh-dev-01.cstrube.de" > ~/.ssh/config
-          echo "  HostName ssh-dev-01.cstrube.de" >> ~/.ssh/config
-          echo "  Port 22" >> ~/.ssh/config
-          echo "  User christian" >> ~/.ssh/config
-          echo "  IdentityFile $(pwd)/private_key" >> ~/.ssh/config
+          echo "  Host ssh-dev-01.cstrube.de" > ~/.ssh/config
           echo "  ProxyCommand cloudflared access ssh --hostname %h --id $CF_ACCESS_CLIENT_ID --secret $CF_ACCESS_CLIENT_SECRET" >> ~/.ssh/config
           echo "  StrictHostKeyChecking no" >> ~/.ssh/config
           echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
 
-      - name: Log Information
-        run: |
-          echo "Debugging SSH Connection:"
-          echo "SSH_HOST: $SSH_HOST"
-          echo "SSH_USERNAME: $SSH_USERNAME"
-          echo "Checking for cloudflared binary:"
-          which cloudflared
-          echo "Cloudflared version:"
-          cloudflared --version
-          echo "SSH Config:"
-          cat ~/.ssh/config
+
 
   deploy:
     runs-on: ubuntu-latest
@@ -65,6 +51,18 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Log Information
+        run: |
+          echo "Debugging SSH Connection:"
+          echo "SSH_HOST: $SSH_HOST"
+          echo "SSH_USERNAME: $SSH_USERNAME"
+          echo "Checking for cloudflared binary:"
+          which cloudflared
+          echo "Cloudflared version:"
+          cloudflared --version
+          echo "SSH Config:"
+          cat ~/.ssh/config
+
       - name: Build and Deploy
         run: |
           echo "$PRIVATE_SSH_KEY" > private_key
