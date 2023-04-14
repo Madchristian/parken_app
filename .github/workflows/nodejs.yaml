@@ -20,9 +20,11 @@ jobs:
       - run: npm install
 
       - name: Setup Cloudflared
-        uses: ./.github/actions/setup-cloudflared
-        with:
-          version: '2023.4.0' 
+        run: |
+          aria2c -x 16 "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64"
+          chmod +x cloudflared-linux-amd64
+          mv cloudflared-linux-amd64 /usr/local/bin/cloudflared
+          cloudflared --version
 
       - name: Setup SSH Config
         env:
