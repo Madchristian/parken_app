@@ -20,11 +20,7 @@ jobs:
       - run: npm install
 
       - name: Setup Cloudflared
-        run: |
-          wget -q https://github.com/cloudflare/cloudflared/releases/download/2023.4.0/cloudflared-linux-amd64
-          sudo mv cloudflared-linux-amd64 /usr/local/bin/cloudflared
-          sudo chmod +x /usr/local/bin/cloudflared
-          cloudflared --version
+        uses: ./.github/actions/setup-cloudflared
 
       - name: Setup SSH Config
         env:
@@ -33,11 +29,9 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "  Host ssh-dev-01.cstrube.de" > ~/.ssh/config
-          echo "  ProxyCommand cloudflared access ssh --hostname %h --id $CF_ACCESS_CLIENT_ID --secret $CF_ACCESS_CLIENT_SECRET" >> ~/.ssh/config
+          echo "  ProxyCommand /usr/local/bin/cloudflared access ssh --hostname %h --id $CF_ACCESS_CLIENT_ID --secret $CF_ACCESS_CLIENT_SECRET" >> ~/.ssh/config
           echo "  StrictHostKeyChecking no" >> ~/.ssh/config
           echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
-
-
 
   deploy:
     runs-on: ubuntu-latest
@@ -57,9 +51,9 @@ jobs:
           echo "SSH_HOST: $SSH_HOST"
           echo "SSH_USERNAME: $SSH_USERNAME"
           echo "Checking for cloudflared binary:"
-          which cloudflared
+          which /usr/local/bin/cloudflared
           echo "Cloudflared version:"
-          cloudflared --version
+          /usr/local/bin/cloudflared --version
           echo "SSH Config:"
           cat ~/.ssh/config
 
