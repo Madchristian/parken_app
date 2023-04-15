@@ -1,5 +1,5 @@
 // mapUtils.test.js
-import { searchForLicensePlate, removeMarker } from 'pubilc/src/js/utils/mapUtils.js';
+import { searchForLicensePlate, removeMarker } from 'pubilc/src/js/utils/maputils';
 
 // Jest.mock() und andere Hilfsfunktionen können hier hinzugefügt werden, um die Tests zu unterstützen
 
