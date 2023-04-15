@@ -48,13 +48,12 @@ jobs:
           mkdir -p ~/.ssh
           echo "$PRIVATE_SSH_KEY" > ~/.ssh/private_key
           chmod 600 ~/.ssh/private_key
-          echo "  IdentityFile ~/.ssh/private_key" > ~/.ssh/config
-          echo "  Host ssh-dev-01.cstrube.de" > ~/.ssh/config
+          echo "Host ssh-dev-01.cstrube.de" > ~/.ssh/config
           echo "  HostName ssh-dev-01.cstrube.de" >> ~/.ssh/config
+          echo "  IdentityFile ~/.ssh/private_key" >> ~/.ssh/config
           echo "  ProxyCommand $CLOUDFLARED_PATH/cloudflared access ssh --hostname %h --id $CF_ACCESS_CLIENT_ID --secret $CF_ACCESS_CLIENT_SECRET" >> ~/.ssh/config
           echo "  StrictHostKeyChecking no" >> ~/.ssh/config
           echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
-
 
       - name: Log Information
         run: |
@@ -70,5 +69,5 @@ jobs:
         run: |
           docker build -t parken_app:$DOCKER_IMAGE_TAG .
           docker save -o parken_app.tar parken_app:$DOCKER_IMAGE_TAG
-          scp -v -i ~/.ssh/private_key parken_app.tar $SSH_USERNAME@$SSH_HOST:/tmp/
-          ssh -v -i ~/.ssh/private_key $SSH_USERNAME@$SSH_HOST "docker load -i /tmp/parken_app.tar && docker stop $CONTAINER_NAME || true && docker rm $CONTAINER_NAME || true && docker run -d --name $CONTAINER_NAME -p 3001:3001 parken_app:$DOCKER_IMAGE_TAG"
+          scp -v -F ~/.ssh/config -i ~/.ssh/private_key parken_app.tar $SSH_USERNAME@$SSH_HOST:/tmp/
+          ssh -v -F ~/.ssh/config -i ~/.ssh/private_key $SSH_USERNAME@$SSH_HOST "docker load -i /tmp/parken_app.tar && docker stop $CONTAINER_NAME || true && docker rm $CONTAINER_NAME || true && docker run -d --name $CONTAINER_NAME -p 3001:3001 parken_app:$DOCKER_IMAGE_TAG"
