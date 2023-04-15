@@ -36,7 +36,7 @@ jobs:
         env:
           SERVER_IP: ${{ github.ref == 'refs/heads/main' && '100.95.230.59' || '100.95.230.59' }}
         with:
-          auth_key: ${{ env.TAILSCALE_AUTH_KEY }}
+          authkey: ${{ env.TAILSCALE_AUTH_KEY }}
           version: "1.18.0"
 
       - name: Build and Deploy
