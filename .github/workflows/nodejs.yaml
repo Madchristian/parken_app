@@ -27,7 +27,7 @@ jobs:
       CONTAINER_NAME: ${{ github.ref == 'refs/heads/main' && 'parken_app' || 'parken_app-dev' }}
       SSH_USERNAME: christian
       SSH_HOST: ssh-dev-01.cstrube.de
-      PRIVATE_SSH_KEY: ${{ secrets.PRIVATE_SSH_KEY }}
+      
 
     steps:
       - uses: actions/checkout@v3
@@ -43,6 +43,8 @@ jobs:
         env:
           CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
           CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+          PRIVATE_SSH_KEY: ${{ secrets.PRIVATE_SSH_KEY }}
+          
         run: |
           mkdir -p ~/.ssh
           echo "$PRIVATE_SSH_KEY" > ~/.ssh/private_key
