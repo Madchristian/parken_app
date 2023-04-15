@@ -3,6 +3,7 @@
   "version": "0.1.1",
   "description": "",
   "main": "index.ejs",
+  "type": "module",
   "scripts": {
     "start": "node server.js",
     "test": "jest"
@@ -26,6 +27,9 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.21.4",
+    "@babel/preset-env": "^7.21.4",
+    "babel-jest": "^29.5.0",
     "jest": "^29.5.0"
   }
 }
