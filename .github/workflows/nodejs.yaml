@@ -1,4 +1,4 @@
-name: Node.js CI/CD 2
+name: Node.js CI/CD
 
 on:
   push:
@@ -26,45 +26,25 @@ jobs:
       DOCKER_IMAGE_TAG: ${{ github.ref == 'refs/heads/main' && 'production' || 'development' }}
       CONTAINER_NAME: ${{ github.ref == 'refs/heads/main' && 'parken_app' || 'parken_app-dev' }}
       SSH_USERNAME: christian
-      SSH_HOST: ssh-dev-01.cstrube.de
-      
+      TAILSCALE_AUTH_KEY: ${{ secrets.TAILSCALE_AUTH_KEY }}
 
     steps:
       - uses: actions/checkout@v3
-      - name: Setup Cloudflared
-        run: |
-          aria2c -x 16 "https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64"
-          chmod +x cloudflared-linux-amd64
-          sudo mv cloudflared-linux-amd64 /usr/local/bin/cloudflared
-          echo "CLOUDFLARED_PATH=/usr/local/bin" >> $GITHUB_ENV
-          cloudflared --version
 
-      - name: Setup SSH Config
-        env:
-          CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
-          CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
-          PRIVATE_SSH_KEY: ${{ secrets.PRIVATE_SSH_KEY }}
+      - name: Setup Tailscale
+        uses: tailscale/github-action@v1
+        with:
+          auth_key: ${{ env.TAILSCALE_AUTH_KEY }}
+          tailscale_version: "1.18.0"
 
+      - name: Get server IP address
         run: |
-          mkdir -p ~/.ssh
-          echo "$PRIVATE_RSA_KEY" > ~/.ssh/private_rsa_key
-          chmod 600 ~/.ssh/private_rsa_key
-          echo "Host ssh-dev-01.cstrube.de" > ~/.ssh/config
-          echo "  ProxyCommand $CLOUDFLARED_PATH/cloudflared access ssh --id $CF_ACCESS_CLIENT_ID --secret $CF_ACCESS_CLIENT_SECRET --hostname %h" >> ~/.ssh/config
-
-      - name: Log Information
-        run: |
-          echo "Debugging SSH Connection:"
-          echo "SSH_HOST: $SSH_HOST"
-          echo "SSH_USERNAME: $SSH_USERNAME"
-          echo "Cloudflared version:"
-          $CLOUDFLARED_PATH/cloudflared --version
-          echo "SSH Config:"
-          cat ~/.ssh/config
+          SERVER_IP=$(tailscale status | grep "ssh-dev-01.cstrube.de" | awk '{print $1}')
+          echo "SERVER_IP=$SERVER_IP" >> $GITHUB_ENV
 
       - name: Build and Deploy
         run: |
           docker build -t parken_app:$DOCKER_IMAGE_TAG .
           docker save -o parken_app.tar parken_app:$DOCKER_IMAGE_TAG
-          scp -v -i ~/.ssh/private_rsa_key parken_app.tar $SSH_USERNAME@$SSH_HOST:/tmp/
-          ssh -v -i ~/.ssh/private_rsa_key $SSH_USERNAME@$SSH_HOST "docker load -i /tmp/parken_app.tar && docker stop $CONTAINER_NAME || true && docker rm $CONTAINER_NAME || true && docker run -d --name $CONTAINER_NAME -p 3001:3001 parken_app:$DOCKER_IMAGE_TAG"
+          scp -v -i ~/.ssh/private_key parken_app.tar $SSH_USERNAME@$SERVER_IP:/tmp/
+          ssh -v -i ~/.ssh/private_key $SSH_USERNAME@$SERVER_IP "docker load -i /tmp/parken_app.tar && docker stop $CONTAINER_NAME || true && docker rm $CONTAINER_NAME || true && docker run -d --name $CONTAINER_NAME -p 3001:3001 parken_app:$DOCKER_IMAGE_TAG"
