@@ -33,14 +33,12 @@ jobs:
 
       - name: Setup Tailscale
         uses: tailscale/github-action@v1
+        env:
+          SERVER_IP: "100.122.109.36"
         with:
           auth_key: ${{ env.TAILSCALE_AUTH_KEY }}
           tailscale_version: "1.18.0"
 
-      - name: Get server IP address
-        run: |
-          SERVER_IP=$(tailscale status | grep "ssh-dev-01.cstrube.de" | awk '{print $1}')
-          echo "SERVER_IP=$SERVER_IP" >> $GITHUB_ENV
 
       - name: Build and Deploy
         run: |
