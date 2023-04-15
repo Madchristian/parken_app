@@ -44,16 +44,13 @@ jobs:
           CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
           CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
           PRIVATE_SSH_KEY: ${{ secrets.PRIVATE_SSH_KEY }}
-          
+
         run: |
           mkdir -p ~/.ssh
           echo "$PRIVATE_SSH_KEY" > ~/.ssh/private_key
           chmod 600 ~/.ssh/private_key
           echo "Host ssh-dev-01.cstrube.de" > ~/.ssh/config
-          echo "  HostName ssh-dev-01.cstrube.de" >> ~/.ssh/config
           echo "  ProxyCommand $CLOUDFLARED_PATH/cloudflared access ssh --id $CF_ACCESS_CLIENT_ID --secret $CF_ACCESS_CLIENT_SECRET --hostname %h" >> ~/.ssh/config
-          echo "  StrictHostKeyChecking no" >> ~/.ssh/config
-          echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
 
       - name: Log Information
         run: |
