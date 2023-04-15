@@ -42,12 +42,14 @@ jobs:
           mkdir -p ~/.ssh
           echo "$PRIVATE_SSH_KEY" > ~/.ssh/private_ssh_key
           chmod 600 ~/.ssh/private_ssh_key
+          
 
       - name: Build and Deploy
         run: |
           docker build -t parken_app:$DOCKER_IMAGE_TAG .
           docker save -o parken_app.tar parken_app:$DOCKER_IMAGE_TAG
           SERVER_IP="${{ github.ref == 'refs/heads/main' && '100.95.230.59' || '100.122.109.36' }}"
-          echo "$SSH_USERNAME@$SERVER_IP" 
+          echo "$SSH_USERNAME@$SERVER_IP"
+          ssh-keyscan $SERVER_IP >> ~/.ssh/known_hosts
           scp -v -i ~/.ssh/private_ssh_key parken_app.tar "$SSH_USERNAME@$SERVER_IP:/tmp/"
           ssh -v -i ~/.ssh/private_ssh_key "$SSH_USERNAME@$SERVER_IP" "docker load -i /tmp/parken_app.tar && docker stop $CONTAINER_NAME || true && docker rm $CONTAINER_NAME || true && docker run -d --name $CONTAINER_NAME -p 3001:3001 parken_app:$DOCKER_IMAGE_TAG"
