@@ -37,7 +37,6 @@ jobs:
           SERVER_IP: ${{ github.ref == 'refs/heads/main' && '100.95.230.59' || '100.95.230.59' }}
         with:
           authkey: ${{ env.TAILSCALE_AUTH_KEY }}
-          version: "1.18.0"
 
       - name: Build and Deploy
         run: |
