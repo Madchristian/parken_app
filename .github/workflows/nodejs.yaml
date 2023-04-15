@@ -43,7 +43,7 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "$PRIVATE_SSH_KEY" > ~/.ssh/private_ssh_key
-          chmod 600 ~/.ssh/private_key
+          chmod 600 ~/.ssh/private_ssh_key
 
       - name: Build and Deploy
         run: |
