@@ -18,6 +18,8 @@ jobs:
           node-version: "18.x"
           cache: "npm"
       - run: npm install
+      - name: Run tests
+        run: npm test
 
   deploy:
     runs-on: ubuntu-latest
@@ -52,4 +54,4 @@ jobs:
           echo "$SSH_USERNAME@$SERVER_IP"
           ssh-keyscan $SERVER_IP >> ~/.ssh/known_hosts
           scp -v -i ~/.ssh/private_ssh_key parken_app.tar "$SSH_USERNAME@$SERVER_IP:/tmp/"
-          ssh -v -i ~/.ssh/private_ssh_key "$SSH_USERNAME@$SERVER_IP" "docker load -i /tmp/parken_app.tar && docker stop $CONTAINER_NAME || true && docker rm $CONTAINER_NAME || true && docker run -d --name $CONTAINER_NAME -p 3001:3001 parken_app:$DOCKER_IMAGE_TAG"
+          ssh -v -i ~/.ssh/private_ssh_key "$SSH_USERNAME@$SERVER_IP" "docker load -i /tmp/parken_app.tar && docker stop $CONTAINER_NAME || true && docker rm $CONTAINER_NAME || true && docker run -d --name $CONTAINER_NAME -p 3000:3000 parken_app:$DOCKER_IMAGE_TAG"
