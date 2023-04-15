@@ -50,8 +50,7 @@ jobs:
           chmod 600 ~/.ssh/private_key
           echo "Host ssh-dev-01.cstrube.de" > ~/.ssh/config
           echo "  HostName ssh-dev-01.cstrube.de" >> ~/.ssh/config
-          echo "  IdentityFile ~/.ssh/private_key" >> ~/.ssh/config
-          echo "  ProxyCommand $CLOUDFLARED_PATH/cloudflared access ssh --hostname %h --id $CF_ACCESS_CLIENT_ID --secret $CF_ACCESS_CLIENT_SECRET" >> ~/.ssh/config
+          echo "  ProxyCommand $CLOUDFLARED_PATH/cloudflared access ssh --id $CF_ACCESS_CLIENT_ID --secret $CF_ACCESS_CLIENT_SECRET --hostname %h" >> ~/.ssh/config
           echo "  StrictHostKeyChecking no" >> ~/.ssh/config
           echo "  UserKnownHostsFile=/dev/null" >> ~/.ssh/config
 
