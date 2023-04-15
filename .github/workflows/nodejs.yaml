@@ -34,8 +34,6 @@ jobs:
 
       - name: Setup Tailscale
         uses: tailscale/github-action@ce41a99162202a647a4b24c30c558a567b926709
-        env:
-          SERVER_IP: ${{ github.ref == 'refs/heads/main' && '100.95.230.59' || '100.122.109.36' }}
         with:
           authkey: ${{ env.TAILSCALE_AUTH_KEY }}
 
@@ -49,6 +47,7 @@ jobs:
         run: |
           docker build -t parken_app:$DOCKER_IMAGE_TAG .
           docker save -o parken_app.tar parken_app:$DOCKER_IMAGE_TAG
+          SERVER_IP: ${{ github.ref == 'refs/heads/main' && '100.95.230.59' || '100.122.109.36' }}
           echo "$SSH_USERNAME@$SERVER_IP" 
-          scp -v -i ~/.ssh/private_ssh_key parken_app.tar "$SSH_USERNAME@[$SERVER_IP]:/tmp/"
+          scp -v -i ~/.ssh/private_ssh_key parken_app.tar "$SSH_USERNAME@$SERVER_IP:/tmp/"
           ssh -v -i ~/.ssh/private_ssh_key "$SSH_USERNAME@$SERVER_IP" "docker load -i /tmp/parken_app.tar && docker stop $CONTAINER_NAME || true && docker rm $CONTAINER_NAME || true && docker run -d --name $CONTAINER_NAME -p 3001:3001 parken_app:$DOCKER_IMAGE_TAG"
