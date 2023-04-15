@@ -3,6 +3,8 @@ import { startSpinner, stopSpinner } from "../features/progress/progress.js";
 import { initializeWebSocket,
   connectWebSocket, deleteParkedCar
 } from "../connections/websockets.js";
+import { searchForLicensePlate, removeMarker } from ".utils/mapUtils.js";
+
 
 const markers = new Map();
 
@@ -110,32 +112,6 @@ document.getElementById("searchForm").addEventListener("submit", (event) => {
   event.preventDefault();
   searchForLicensePlate(map);
 });
-
-function searchForLicensePlate(map) {
-  const licensePlate = document
-    .getElementById("searchInput")
-    .value.toUpperCase();
-  const marker = markerGroup
-    .getLayers()
-    .find((marker) => marker.options.licensePlate === licensePlate);
-
-  if (marker) {
-    map.setView(marker.getLatLng(), 19);
-  } else {
-    alert("Kennzeichen nicht gefunden");
-  }
-}
-
-function removeMarker(markerId) {
-  if (markers.has(markerId)) {
-    const marker = markers.get(markerId);
-    marker.removeFrom(map);
-    markers.delete(markerId);
-    console.log(`Removed marker with ID ${markerId}`);
-  } else {
-    console.warn(`No marker found with ID ${markerId}`);
-  }
-}
 
 markerGroup.eachLayer(function (marker) {
   marker.on("click", function () {
