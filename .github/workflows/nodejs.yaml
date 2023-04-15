@@ -49,5 +49,6 @@ jobs:
         run: |
           docker build -t parken_app:$DOCKER_IMAGE_TAG .
           docker save -o parken_app.tar parken_app:$DOCKER_IMAGE_TAG
+          echo "$SSH_USERNAME@$SERVER_IP" 
           scp -v -i ~/.ssh/private_ssh_key parken_app.tar "$SSH_USERNAME@[$SERVER_IP]:/tmp/"
           ssh -v -i ~/.ssh/private_ssh_key "$SSH_USERNAME@$SERVER_IP" "docker load -i /tmp/parken_app.tar && docker stop $CONTAINER_NAME || true && docker rm $CONTAINER_NAME || true && docker run -d --name $CONTAINER_NAME -p 3001:3001 parken_app:$DOCKER_IMAGE_TAG"
