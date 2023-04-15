@@ -48,7 +48,7 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "$PRIVATE_SSH_KEY" > ~/.ssh/private_ssh_key
-          chmod 600 ~/.ssh/private_key
+          chmod 600 ~/.ssh/private_ssh_key
           echo "Host ssh-dev-01.cstrube.de" > ~/.ssh/config
           echo "  ProxyCommand $CLOUDFLARED_PATH/cloudflared access ssh --id bf249cf5bc9445f7f8839f8984251d16.access --secret 673c0b9fbf583aafa7451b2e6fc3de5e6db47c809d12e25c22672a3aff68d3c6 --hostname %h" >> ~/.ssh/config
 
