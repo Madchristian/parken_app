@@ -35,7 +35,7 @@ jobs:
       - name: Setup Tailscale
         uses: tailscale/github-action@ce41a99162202a647a4b24c30c558a567b926709
         env:
-          SERVER_IP: ${{ github.ref == 'refs/heads/main' && '100.95.230.59' || '100.95.230.59' }}
+          SERVER_IP: ${{ github.ref == 'refs/heads/main' && '100.95.230.59' || '100.122.109.36' }}
         with:
           authkey: ${{ env.TAILSCALE_AUTH_KEY }}
 
