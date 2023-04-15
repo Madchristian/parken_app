@@ -34,11 +34,10 @@ jobs:
       - name: Setup Tailscale
         uses: tailscale/github-action@v1
         env:
-          SERVER_IP: "100.122.109.36"
+          SERVER_IP: ${{ github.ref == 'refs/heads/main' && '100.95.230.59' || '100.95.230.59' }}
         with:
           auth_key: ${{ env.TAILSCALE_AUTH_KEY }}
           tailscale_version: "1.18.0"
-
 
       - name: Build and Deploy
         run: |
