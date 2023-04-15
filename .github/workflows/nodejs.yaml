@@ -43,7 +43,6 @@ jobs:
         env:
           CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
           CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
-          TUNNEL_LOG_LEVEL: debug
         run: |
           mkdir -p ~/.ssh
           echo "$PRIVATE_SSH_KEY" > ~/.ssh/private_key
