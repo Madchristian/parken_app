@@ -3,7 +3,6 @@
   "version": "0.1.1",
   "description": "",
   "main": "index.ejs",
-
   "scripts": {
     "start": "node server.js",
     "test": "jest"
@@ -23,13 +22,6 @@
     "jquery": "^3.6.4",
     "leaf": "^1.0.1",
     "leaflet.markercluster": "^1.5.3",
-    "tesseract.js": "^4.0.2",
     "uuid": "^9.0.0"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.21.4",
-    "@babel/preset-env": "^7.21.4",
-    "babel-jest": "^29.5.0",
-    "jest": "^29.5.0"
   }
 }
