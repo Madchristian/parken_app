@@ -8,6 +8,8 @@ const markers = new Map();
 
 export let markerGroup; // Definieren Sie markerGroup auf globaler Ebene
 
+let currentZIndex = 1000;
+
 let map;
 
 const openStreetMap = L.tileLayer(
@@ -94,7 +96,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         // Add a click event listener to the marker
         marker.on("click", function () {
-          this.bringToFront();
+          currentZIndex += 1;
+          this.setZIndexOffset(currentZIndex);
         });
 
         markerGroup.addLayer(marker);
