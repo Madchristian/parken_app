@@ -19,7 +19,7 @@ export async function deleteParkedCar(id, locationName, map, markers) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     // Remove the marker from the map
-    removeMarker(markers, carId, map);
+    removeMarker(markers, id, map);
    
 
     
