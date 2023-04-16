@@ -1,10 +1,10 @@
 import { createIcon } from "../features/map/createicon.js";
 import { startSpinner, stopSpinner } from "../features/progress/progress.js";
-import { initializeWebSocket,
-  connectWebSocket, deleteParkedCar
+import {
+  initializeWebSocket,
+  deleteParkedCar,
 } from "../connections/websockets.js";
-import { searchForLicensePlate, removeMarker } from ".utils/maputils.js";
-
+import { searchForLicensePlate } from "../utils/maputils.js";
 
 const markers = new Map();
 
@@ -82,18 +82,26 @@ document.addEventListener("DOMContentLoaded", async function () {
           icon: icon,
           licensePlate: car.licensePlate,
         });
+
+        // Add an event listener to the delete button on the marker
+        marker.on("popupopen", () => {
+          const deleteButton = document.getElementById(`delete-${car._id}`);
+          if (deleteButton) {
+            deleteButton.addEventListener("click", (event) => {
+              event.stopPropagation(); // Prevent the click event from propagating to the marker itself
+              deleteParkedCar(car._id, car.locationName, map);
+            });
+          }
+        });
+
+        // Add a click event listener to the marker
+        marker.on("click", function () {
+          this.bringToFront();
+        });
+
         markerGroup.addLayer(marker);
         // Fügen Sie den Marker zur "markers" Map hinzu
         markers.set(car._id, marker);
-
-        // Add an event listener to the delete button on the marker
-        const deleteButton = document.getElementById(`delete-${car._id}`);
-        if (deleteButton) {
-          deleteButton.addEventListener("click", (event) => {
-            event.stopPropagation(); // Prevent the click event from propagating to the marker itself
-            deleteParkedCar(car._id, car.locationName, map);
-          });
-        }
         marker._leaflet_id = car._id;
       }
     });
