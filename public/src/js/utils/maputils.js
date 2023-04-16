@@ -2,21 +2,22 @@
 
 export let currentZIndex = 1000;
 
-export function searchForLicensePlate(map, licensePlate, markerGroup) {
-  const marker = markerGroup
-    .getLayers()
-    .find((marker) => marker.options.licensePlate === licensePlate);
+export async function searchForLicensePlate(map, markerGroup, licensePlate) {
+  if (!licensePlate) {
+    return;
+  }
 
-  if (marker) {
-    // Erstellen Sie eine Animation, die auf den Marker zoomt
-    const zoomDuration = 2.5; // Dauer der Animation in Sekunden
-    map.flyTo(marker.getLatLng(), 19, { duration: zoomDuration });
+  // Loop through each marker in the markerGroup
+  let found = false;
+  markerGroup.eachLayer((marker) => {
+    if (marker.options.licensePlate.toLowerCase() === licensePlate.toLowerCase()) {
+      found = true;
+      map.setView(marker.getLatLng(), 18);
+      marker.openPopup();
+    }
+  });
 
-    setTimeout(() => {
-      currentZIndex += 1;
-      marker.setZIndexOffset(currentZIndex);
-    }, zoomDuration * 1000); // Aktualisieren Sie den Z-Index nach der Animation
-  } else {
-    alert("Kennzeichen nicht gefunden");
+  if (!found) {
+    alert("License plate not found");
   }
 }
