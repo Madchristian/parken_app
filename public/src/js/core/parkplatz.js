@@ -124,5 +124,5 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 document.getElementById("searchForm").addEventListener("submit", (event) => {
   event.preventDefault();
-  searchForLicensePlate(map);
+  searchForLicensePlate(map, markerGroup);
 });
