@@ -11,14 +11,3 @@ export function searchForLicensePlate(map, licensePlate, markerGroup) {
     }
   }
   
-  export function removeMarker(markers, markerId, map) {
-    if (markers.has(markerId)) {
-      const marker = markers.get(markerId);
-      marker.removeFrom(map);
-      markers.delete(markerId);
-      console.log(`Removed marker with ID ${markerId}`);
-    } else {
-      console.warn(`No marker found with ID ${markerId}`);
-    }
-  }
-  
