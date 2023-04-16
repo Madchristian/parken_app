@@ -98,18 +98,20 @@ document.addEventListener("DOMContentLoaded", async function () {
         marker.on("click", function () {
           currentZIndex += 1;
           this.setZIndexOffset(currentZIndex);
+
+          markerGroup.eachLayer(function (otherMarker) {
+            if (otherMarker._leaflet_id === marker._leaflet_id) {
+              otherMarker.setZIndexOffset(currentZIndex);
+            } else {
+              otherMarker.setZIndexOffset(0);
+            }
+          });
         });
 
         markerGroup.addLayer(marker);
         // Fügen Sie den Marker zur "markers" Map hinzu
         markers.set(car._id, marker);
         marker._leaflet_id = car._id;
-        markerGroup.eachLayer(function (marker) {
-          marker.on("click", function () {
-            currentZIndex += 1;
-            this.setZIndexOffset(currentZIndex);
-          });
-        });
       }
     });
 
