@@ -1,8 +1,6 @@
 import { createIcon } from "../features/map/createicon.js";
 import { startSpinner, stopSpinner } from "../features/progress/progress.js";
-import {
-  initializeWebSocket
-} from "../connections/websockets.js";
+import { initializeWebSocket } from "../connections/websockets.js";
 import { searchForLicensePlate } from "../utils/maputils.js";
 import { deleteParkedCar } from "../features/map/removemarker.js";
 
@@ -103,6 +101,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         // Fügen Sie den Marker zur "markers" Map hinzu
         markers.set(car._id, marker);
         marker._leaflet_id = car._id;
+        markerGroup.eachLayer(function (marker) {
+          marker.on("click", function () {
+            event.target.bringToFront();
+          });
+        });
       }
     });
 
@@ -119,10 +122,4 @@ document.addEventListener("DOMContentLoaded", async function () {
 document.getElementById("searchForm").addEventListener("submit", (event) => {
   event.preventDefault();
   searchForLicensePlate(map);
-});
-
-markerGroup.eachLayer(function (marker) {
-  marker.on("click", function () {
-    event.target.bringToFront();
-  });
 });
