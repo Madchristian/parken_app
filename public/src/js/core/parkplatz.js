@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             deleteButton.addEventListener("click", (event) => {
               event.stopPropagation(); // Prevent the click event from propagating to the marker itself
               console.log("Delete button clicked");
-              deleteParkedCar(car._id, car.locationName, map);
+              deleteParkedCar(car._id, car.locationName, map, markers);
             });
           }
         });
