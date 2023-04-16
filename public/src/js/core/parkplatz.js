@@ -106,7 +106,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         marker._leaflet_id = car._id;
         markerGroup.eachLayer(function (marker) {
           marker.on("click", function () {
-            event.target.bringToFront();
+            currentZIndex += 1;
+            this.setZIndexOffset(currentZIndex);
           });
         });
       }
