@@ -3,7 +3,7 @@ import { startSpinner, stopSpinner } from "../features/progress/progress.js";
 import { initializeWebSocket,
   connectWebSocket, deleteParkedCar
 } from "../connections/websockets.js";
-import { searchForLicensePlate, removeMarker } from ".utils/maputils.js";
+import { searchForLicensePlate, removeMarker } from "../utils/maputils.js";
 
 
 const markers = new Map();
