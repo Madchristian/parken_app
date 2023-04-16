@@ -1,10 +1,10 @@
 import { createIcon } from "../features/map/createicon.js";
 import { startSpinner, stopSpinner } from "../features/progress/progress.js";
 import {
-  initializeWebSocket,
-  deleteParkedCar,
+  initializeWebSocket
 } from "../connections/websockets.js";
 import { searchForLicensePlate } from "../utils/maputils.js";
+import { deleteParkedCar } from "../features/map/removemarker.js";
 
 const markers = new Map();
 
