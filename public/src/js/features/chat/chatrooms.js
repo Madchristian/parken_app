@@ -1,0 +1,1 @@
+// Chatroom-Verwaltung, Raum erstellen/beitreten
