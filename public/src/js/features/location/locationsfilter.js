@@ -1,5 +1,5 @@
 // locationsfilter.js
-import { markerGroup } from "/src/js/core/parkplatz.js";
+import { markerGroup, map } from "/src/js/core/parkplatz.js";
 
 async function fetchLocations() {
   try {

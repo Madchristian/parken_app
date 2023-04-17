@@ -10,7 +10,7 @@ export let markerGroup; // Definieren Sie markerGroup auf globaler Ebene
 
 let currentZIndex = 1000;
 
-let map;
+export let map;
 
 const openStreetMap = L.tileLayer(
   "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
