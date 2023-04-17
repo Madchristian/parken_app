@@ -1,7 +1,8 @@
 import { getLocation } from "../../features/location/positionandsave.js";
 import { startSpinner, stopSpinner } from "../../features/progress/progress.js";
 
-export const licensePlateFileInput = document.getElementById('licensePlateInput');
+export const licensePlateFileInput =
+  document.getElementById("licensePlateInput");
 
 export async function captureImageWithCamera() {
   return new Promise((resolve, reject) => {
@@ -18,28 +19,42 @@ export async function captureImageWithCamera() {
         return;
       }
 
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
-
       img.onload = () => {
         const canvas = document.createElement("canvas");
-        canvas.width = img.width;
-        canvas.height = img.height;
         const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0);
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        document.body.removeChild(input);
-        resolve(imageData);
-      };
 
-      img.onerror = (error) => {
-        reject(error);
+        // Skalieren Sie die Bilder auf die gewünschte Größe
+        const targetWidth = 224;
+        const targetHeight = 224;
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+
+        // Laden Sie das Beispielbild
+        const exampleImage = new Image();
+        exampleImage.src = "images/sample.png";
+        exampleImage.onload = () => {
+          // Zeichnen Sie das transparente Beispielbild auf den Canvas
+          ctx.globalAlpha = 0.2; // 20% Transparenz
+          ctx.drawImage(exampleImage, 0, 0, canvas.width, canvas.height);
+          ctx.globalAlpha = 1.0; // Setzen Sie die Transparenz zurück auf 100%
+
+          // Zeichnen Sie das aufgenommene Bild auf den Canvas
+          ctx.drawImage(img, 0, 0);
+          const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+          document.body.removeChild(input);
+          resolve(imageData);
+        };
+
+        exampleImage.onerror = (error) => {
+          console.error("Error loading example image:", error);
+          reject(error);
+        };
       };
     });
 
     document.body.appendChild(input);
     input.click();
-  }); 
+  });
 }
 
 export async function scanLicensePlate() {
@@ -62,15 +77,14 @@ export async function scanLicensePlate() {
   }
 }
 
-
 async function getImageFromInput(imageFile) {
   return new Promise((resolve, reject) => {
     const image = new Image();
     image.src = URL.createObjectURL(imageFile);
 
     image.onload = () => {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
 
       canvas.width = image.width;
       canvas.height = image.height;
