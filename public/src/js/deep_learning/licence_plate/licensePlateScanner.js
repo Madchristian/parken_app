@@ -57,26 +57,33 @@ export async function captureImageWithCamera() {
   });
 }
 
+// After capturing the image with the camera, display the input form
 export async function scanLicensePlate() {
   startSpinner();
 
   try {
-    // Erfassen Sie das Bild von der Kamera und konvertieren Sie es in die geeignete Form
+    // Capture the image from the camera and convert it into the appropriate form
     const imageData = await captureImageWithCamera();
 
-    // Vorhersage der Kennzeichen-, Fahrzeugtyp- und Farbinformationen
-    const [licensePlate, vehicleType, color] = predict(model, imageData);
-    const vehiclestatus = "gescannt";
+    // Show the input form for user to enter vehicle information
+    document.getElementById("inputForm").style.display = "block";
 
-    // Verwenden Sie die erkannten Informationen für Ihre Anwendung
-    getLocation(licensePlate, vehiclestatus);
+    // Listen for submit button click
+    document.getElementById("submitButton").addEventListener("click", () => {
+      // Get the user input values
+      const licensePlate = document.getElementById("licensePlate").value;
+      const vehicleType = document.getElementById("vehicleType").value;
+      const color = document.getElementById("color").value;
+
+      // Call the function to train the model with the image and user input values
+      trainModel(imageData, licensePlate, vehicleType, color);
+    });
   } catch (error) {
     console.error(error);
   } finally {
     stopSpinner();
   }
 }
-
 async function getImageFromInput(imageFile) {
   return new Promise((resolve, reject) => {
     const image = new Image();

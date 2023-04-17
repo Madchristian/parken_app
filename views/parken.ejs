@@ -125,6 +125,23 @@
         <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
           <span class="visually-hidden">Loading...</span>
         </div>
+        <!-- Add this to your HTML file -->
+<div id="inputForm" style="display: none;">
+  <h3>Enter vehicle information:</h3>
+  <form>
+    <label for="licensePlate">License Plate:</label>
+    <input type="text" id="licensePlate" name="licensePlate" required><br><br>
+
+    <label for="vehicleType">Vehicle Type:</label>
+    <input type="text" id="vehicleType" name="vehicleType" required><br><br>
+
+    <label for="color">Color:</label>
+    <input type="text" id="color" name="color" required><br><br>
+
+    <button type="button" id="submitButton">Submit</button>
+  </form>
+</div>
+
       </div>
     </div>
 
