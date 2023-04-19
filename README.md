@@ -23,7 +23,6 @@ Acknowledgments
     Thank you to OpenAI for providing ChatGPT, which helped me with this project.
 
 ___
-
 ## ChatGPT
 
 And thanks to me Here is my Summary:
