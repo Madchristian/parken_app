@@ -1,6 +1,6 @@
 {
   "name": "parken_app",
-  "version": "0.1.2",
+  "version": "0.1.3a",
   "description": "",
   "main": "index.ejs",
   "scripts": {
