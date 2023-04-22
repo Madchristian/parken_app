@@ -4,31 +4,16 @@
 # Visual Studio Code und viele andere Editoren können diese Einstellungen automatisch erkennen und anwenden.
 
 # Die Einstellungen gelten für alle Dateien im Projekt.
+root = true
 [*]
-# Verwenden Sie Unix-Zeilenumbrüche (LF).
-end_of_line = lf
-
-# Zeichenkodierung: UTF-8.
-charset = utf-8
-
-# Entfernen Sie am Ende jeder Zeile automatisch überschüssige Leerzeichen.
-trim_trailing_whitespace = true
-
-# Fügen Sie am Ende jeder Datei automatisch eine neue Zeile hinzu.
-insert_final_newline = true
-
-# Setzen Sie die Einzugstiefe auf 2 Leerzeichen.
 indent_style = space
 indent_size = 2
-
-# Spezifische Einstellungen für JavaScript-Dateien.
-[*.js]
-indent_size = 2
-
-# Spezifische Einstellungen für HTML-Dateien.
-[*.html]
-indent_size = 2
-
-# Spezifische Einstellungen für CSS-Dateien.
-[*.css]
-indent_size = 2
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+end_of_line = lf
+max_line_length = off
+[Makefile]
+indent_style = tab
+[*.go]
+indent_style = tab
